@@ -9,6 +9,11 @@ public class InventorySlot : MonoBehaviour
     public int quantity;
     public Text quantityText;
 
+    private void Start()
+    {
+        quantity = DataPlayer.GetItemQuantity(id);
+        quantityText.text = quantity.ToString();
+    }
     public void AddItem(int quantityAdd)
     {
         DataPlayer.AddItemQuantity(id, quantityAdd);

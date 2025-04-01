@@ -13,7 +13,11 @@ MonoBehaviour:
   m_Name: ChickenFoodRecipe 2
   m_EditorClassIdentifier: 
   recipeName: ChickenFood
-  resultItem: {fileID: 0}
+  resultItem: {fileID: 11400000, guid: 4671f116d56eeaf468d53a917cb545ca, type: 2}
   resultAmount: 1
-  ingredients: []
-  craftingTime: 1
+  ingredients:
+  - item: {fileID: 11400000, guid: 02bb149b14cb7614fb8e1f98024128b2, type: 2}
+    quantity: 1
+  - item: {fileID: 11400000, guid: 84f221804075c1c488e7e30f9dfe23b9, type: 2}
+    quantity: 1
+  craftingTime: 300

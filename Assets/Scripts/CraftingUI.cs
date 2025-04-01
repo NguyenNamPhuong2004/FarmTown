@@ -1,159 +1,80 @@
-using System.Collections;
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CraftingUI : MonoBehaviour
 {
-    [SerializeField] private GameObject craftingPanel;
-    [SerializeField] private Transform recipeContainer;
-    [SerializeField] private GameObject recipeButtonPrefab;
+    public static CraftingUI Instance;
 
-    [SerializeField] private Transform ingredientContainer;
-    [SerializeField] private GameObject ingredientItemPrefab;
-
-    [SerializeField] private UnityEngine.UI.Image resultIcon;
-    [SerializeField] private UnityEngine.UI.Text resultName;
-
-    [SerializeField] private UnityEngine.UI.Button craftButton;
-    [SerializeField] private UnityEngine.UI.Text craftButtonText;
-
+    [Header("Recipe Selection UI")]
+    [SerializeField] private List<Button> recipeButtons;
+    [SerializeField] private Image resultIcon;
+    [SerializeField] private Text resultName;
+    [SerializeField] private Button craftButton;
     private Recipe selectedRecipe;
-    private bool isCrafting = false;
+
+    [SerializeField] private Image ingredientIcon1, ingredientIcon2;
+    [SerializeField] private Text ingredientName1, ingredientName2;
+    [SerializeField] private Text ingredientAmount1, ingredientAmount2;
+
+    [Header("Waiting List UI")]
+    [SerializeField] private List<WaitingSlotUI> waitingSlotsUI;
+
+    private void Awake() => Instance = this;
 
     private void Start()
     {
-        // Hi?n th? các công th?c
-        DisplayAllRecipes();
+        CraftingSystem.Instance.OnWaitingSlotsUpdated += UpdateWaitingSlots;
 
-        // Vô hi?u hóa nút craft ban ??u
-        craftButton.interactable = false;
-        craftButtonText.text = "Ch?n công th?c";
+        for (int i = 0; i < recipeButtons.Count; i++)
+        {
+            int index = i;
+            recipeButtons[i].onClick.AddListener(() => SelectRecipe(CraftingSystem.Instance.GetRecipe(index)));
+        }
+        craftButton.onClick.AddListener(CraftSelectedRecipe);
     }
 
-    // Hi?n th? t?t c? công th?c
-    private void DisplayAllRecipes()
-    {
-        // Xóa t?t c? recipe button hi?n t?i
-        foreach (Transform child in recipeContainer)
-        {
-            Destroy(child.gameObject);
-        }
-
-        List<Recipe> recipes = CraftingSystem.Instance.GetAllRecipes();
-
-        foreach (Recipe recipe in recipes)
-        {
-            GameObject buttonObj = Instantiate(recipeButtonPrefab, recipeContainer);
-            RecipeButton recipeButton = buttonObj.GetComponent<RecipeButton>();
-
-            if (recipeButton != null)
-            {
-                recipeButton.SetRecipe(recipe);
-                recipeButton.OnRecipeClicked += SelectRecipe;
-            }
-        }
-    }
-
-    // X? lý khi ng??i ch?i ch?n m?t công th?c
-    public void SelectRecipe(Recipe recipe)
+    private void SelectRecipe(Recipe recipe)
     {
         selectedRecipe = recipe;
-
-        // Hi?n th? thông tin công th?c
-        DisplayRecipeDetails(recipe);
-
-        // C?p nh?t tr?ng thái nút craft
-        UpdateCraftButton();
-    }
-
-    // Hi?n th? thông tin chi ti?t công th?c
-    private void DisplayRecipeDetails(Recipe recipe)
-    {
-        // Xóa t?t c? item trong ingredient container
-        foreach (Transform child in ingredientContainer)
-        {
-            Destroy(child.gameObject);
-        }
-
-        // Hi?n th? nguyên li?u
-        foreach (Recipe.Ingredient ingredient in recipe.ingredients)
-        {
-            GameObject ingredientObj = Instantiate(ingredientItemPrefab, ingredientContainer);
-            IngredientItem ingredientUI = ingredientObj.GetComponent<IngredientItem>();
-
-            if (ingredientUI != null)
-            {
-                bool hasEnough = CraftingSystem.Instance.GetComponent<InventorySystem>()
-                                 .HasItem(ingredient.item.itemName, ingredient.quantity);
-                ingredientUI.Setup(ingredient.item, ingredient.quantity, hasEnough);
-            }
-        }
-
-        // Hi?n th? k?t qu?
         resultIcon.sprite = recipe.resultItem.itemSprite;
-        resultName.text = recipe.resultItem.itemName;
+        resultName.text = $"{recipe.resultItem.itemName} x{recipe.resultAmount}";
+
+        var ingredient1 = recipe.ingredients[0];
+        ingredientIcon1.sprite = ingredient1.item.itemSprite;
+        ingredientName1.text = ingredient1.item.itemName;
+        int playerAmount1 = CraftingSystem.Instance.GetPlayerInventoryAmount(ingredient1.item.itemName);
+        ingredientAmount1.text = $"{playerAmount1}/{ingredient1.quantity}";
+        ingredientAmount1.color = playerAmount1 >= ingredient1.quantity ? Color.green : Color.red;
+
+        var ingredient2 = recipe.ingredients[1];
+        ingredientIcon2.sprite = ingredient2.item.itemSprite;
+        ingredientName2.text = ingredient2.item.itemName;
+        int playerAmount2 = CraftingSystem.Instance.GetPlayerInventoryAmount(ingredient2.item.itemName);
+        ingredientAmount2.text = $"{playerAmount2}/{ingredient2.quantity}";
+        ingredientAmount2.color = playerAmount2 >= ingredient2.quantity ? Color.green : Color.red;
+
+        craftButton.interactable = CraftingSystem.Instance.CanCraft(recipe);
     }
 
-    // C?p nh?t tr?ng thái nút craft
-    private void UpdateCraftButton()
+    private void CraftSelectedRecipe()
     {
-        if (selectedRecipe == null)
-        {
-            craftButton.interactable = false;
-            craftButtonText.text = "Ch?n công th?c";
-            return;
-        }
-
-        if (isCrafting)
-        {
-            craftButton.interactable = false;
-            craftButtonText.text = "?ang ch? bi?n...";
-            return;
-        }
-
-        bool canCraft = CraftingSystem.Instance.CanCraft(selectedRecipe);
-        craftButton.interactable = canCraft;
-        craftButtonText.text = canCraft ? "Ch? bi?n" : "Thi?u nguyên li?u";
+        if (selectedRecipe != null)
+            CraftingSystem.Instance.Craft(selectedRecipe);
     }
 
-    // X? lý nút craft ???c nh?n
-    public void OnCraftButtonClicked()
+    private void UpdateWaitingSlots(List<WaitingSlot> waitingSlots)
     {
-        if (selectedRecipe != null && !isCrafting)
+        for (int i = 0; i < waitingSlotsUI.Count; i++)
         {
-            StartCoroutine(CraftWithAnimation());
-        }
-    }
-
-    // Coroutine ?? x? lý quá trình ch? bi?n
-    private IEnumerator CraftWithAnimation()
-    {
-        isCrafting = true;
-        UpdateCraftButton();
-
-        // B?t ??u craft
-        yield return StartCoroutine(CraftingSystem.Instance.CraftItem(selectedRecipe));
-
-        isCrafting = false;
-
-        // C?p nh?t hi?n th?
-        DisplayRecipeDetails(selectedRecipe);
-        UpdateCraftButton();
-    }
-
-    // Hi?n th?/?n panel
-    public void ToggleCraftingPanel()
-    {
-        craftingPanel.SetActive(!craftingPanel.activeSelf);
-
-        if (craftingPanel.activeSelf)
-        {
-            // Refresh UI khi m?
-            if (selectedRecipe != null)
+            if (i < waitingSlots.Count)
             {
-                DisplayRecipeDetails(selectedRecipe);
-                UpdateCraftButton();
+                int index = i;
+                waitingSlotsUI[i].UpdateSlot(waitingSlots[i], () => CraftingSystem.Instance.CollectItem(waitingSlots[index]));
+            }
+            else
+            {
+                waitingSlotsUI[i].HideSlot();
             }
         }
     }

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f45a1432e80159e4887aad3a2b3916e4, type: 3}
   m_Name: ChickenFood
   m_EditorClassIdentifier: 
-  itemName: Wheat
-  itemSalePrice: 11
-  itemSprite: {fileID: 21300106, guid: 2700e06d970d112489ff23cfb58c3f78, type: 3}
+  itemName: ChickenFood
+  itemSalePrice: 23
+  itemBuyPrice: 0
+  itemSprite: {fileID: 311674122, guid: fc242d6d56a57ec45bfef0c69293ad63, type: 3}

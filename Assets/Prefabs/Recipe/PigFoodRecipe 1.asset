@@ -12,8 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7421d799a927f864dbb9117d7ce32589, type: 3}
   m_Name: PigFoodRecipe 1
   m_EditorClassIdentifier: 
-  recipeName: 
-  resultItem: {fileID: 0}
+  recipeName: PigFood
+  resultItem: {fileID: 11400000, guid: 35913431af7575e499ed9e3889a77f44, type: 2}
   resultAmount: 1
-  ingredients: []
-  craftingTime: 1
+  ingredients:
+  - item: {fileID: 11400000, guid: 84f221804075c1c488e7e30f9dfe23b9, type: 2}
+    quantity: 1
+  - item: {fileID: 11400000, guid: 84f221804075c1c488e7e30f9dfe23b9, type: 2}
+    quantity: 1
+  craftingTime: 600

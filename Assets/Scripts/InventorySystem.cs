@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 
 public class InventorySystem : MonoBehaviour
 {
@@ -24,6 +23,14 @@ public class InventorySystem : MonoBehaviour
         {
             int index = i;
             selectItems[i].onClick.AddListener(() => SelectItem(slots[index]));
+        }
+    }
+    void Start()
+    {
+        Debug.Log("Available inventory items:");
+        foreach (InventorySlot slot in slots)
+        {
+            Debug.Log("- " + slot.item.itemName);
         }
     }
     private void Update()
@@ -57,14 +64,25 @@ public class InventorySystem : MonoBehaviour
     }
     public void AddItem(string itemName, int quantityAdd)
     {
+        bool itemFound = false;
+
+        // First try to find an existing slot with this item
         foreach (InventorySlot slot in slots)
         {
-            if(itemName == slot.item.itemName)
+            if (itemName == slot.item.itemName)
             {
                 slot.AddItem(quantityAdd);
+                itemFound = true;
+                Debug.Log(slots.Count);
             }
         }
-    } 
+
+        // If item wasn't found in any slot, log an error
+        if (!itemFound)
+        {
+            Debug.LogError("Could not add item to inventory: No slot found with item named '" + itemName + "'");
+        }
+    }
     public void SubItem(string itemName, int quantitySub)
     {
         foreach (InventorySlot slot in slots)
@@ -72,8 +90,20 @@ public class InventorySystem : MonoBehaviour
             if(itemName == slot.item.itemName)
             {
                 slot.SubItem(quantitySub);
+                break;
             }
         }
+    }
+    public int GetItemAmount(string itemName)
+    {
+        foreach (InventorySlot slot in slots)
+        {
+            if (itemName == slot.item.itemName)
+            {
+                return slot.quantity;
+            }
+        }
+        return 0;
     }
     public bool HasItem(string itemName, int quantity)
     {

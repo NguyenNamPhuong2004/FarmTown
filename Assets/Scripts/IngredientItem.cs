@@ -1,14 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 // UI cho hiển thị nguyên liệu
 public class IngredientItem : MonoBehaviour
 {
-    [SerializeField] private UnityEngine.UI.Image itemIcon;
-    [SerializeField] private UnityEngine.UI.Text itemName;
-    [SerializeField] private UnityEngine.UI.Text itemQuantity;
-    [SerializeField] private UnityEngine.UI.Image background;
+    [SerializeField] private Image itemIcon;
+    [SerializeField] private Text itemName;
+    [SerializeField] private Text itemQuantity;
+    [SerializeField] private Image background;
 
     [SerializeField] private Color enoughColor = new Color(1, 1, 1, 1);
     [SerializeField] private Color notEnoughColor = new Color(1, 0.7f, 0.7f, 1);
