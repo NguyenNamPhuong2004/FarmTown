@@ -3,7 +3,6 @@ using UnityEngine.UI;
 
 public class InventorySlot : MonoBehaviour
 {
-    public int id;
     public Item item;
     public GameObject slot;
     public int quantity;
@@ -11,20 +10,20 @@ public class InventorySlot : MonoBehaviour
 
     private void Start()
     {
-        quantity = DataPlayer.GetItemQuantity(id);
+        quantity = DataPlayer.GetItemQuantity(item.id);
         quantityText.text = quantity.ToString();
     }
     public void AddItem(int quantityAdd)
     {
-        DataPlayer.AddItemQuantity(id, quantityAdd);
-        quantity = DataPlayer.GetItemQuantity(id);
+        DataPlayer.AddItemQuantity(item.id, quantityAdd);
+        quantity = DataPlayer.GetItemQuantity(item.id);
         quantityText.text = quantity.ToString();
         if (quantity > 0) AddSlot();
     }
     public void SubItem(int quantitySub)
     {
-        DataPlayer.SubItemQuantity(id, quantitySub);
-        quantity = DataPlayer.GetItemQuantity(id);
+        DataPlayer.SubItemQuantity(item.id, quantitySub);
+        quantity = DataPlayer.GetItemQuantity(item.id);
         quantityText.text = quantity.ToString();
         if (quantity == 0)
         {

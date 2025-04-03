@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f45a1432e80159e4887aad3a2b3916e4, type: 3}
   m_Name: CowFood
   m_EditorClassIdentifier: 
+  id: 8
   itemName: CowFood
   itemSalePrice: 21
   itemBuyPrice: 0

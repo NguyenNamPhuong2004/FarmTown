@@ -2,20 +2,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+[Serializable]
 public class WaitingSlot
 {
-    public string productName;
-    public Sprite productSprite;    
-    public DateTime finishTime;
+    public string finishTime;
+    public Item productItem;
 
     public WaitingSlot(Recipe recipe)
     {
-        productName = recipe.resultItem.itemName;
-        productSprite = recipe.resultItem.itemSprite;
-        finishTime = DateTime.Now.AddSeconds(recipe.craftingTime);
+        finishTime = DateTime.Now.AddSeconds(recipe.craftingTime).ToString("yyyy-MM-ddTHH:mm:ss");
+        productItem = recipe.resultItem;
     }
 
-    public bool IsCompleted() => DateTime.Now >= finishTime;
-    public string GetRemainingTime() => IsCompleted() ? "00:00:00:00" : (finishTime - DateTime.Now).ToString(@"dd\:hh\:mm\:ss");
+    public bool IsCompleted() => DateTime.Now >= DateTime.ParseExact(finishTime, "yyyy-MM-ddTHH:mm:ss", null);
+    public string GetRemainingTime() => IsCompleted() ? "00:00:00:00" : (DateTime.ParseExact(finishTime, "yyyy-MM-ddTHH:mm:ss", null) - DateTime.Now).ToString(@"dd\:hh\:mm\:ss");
 }

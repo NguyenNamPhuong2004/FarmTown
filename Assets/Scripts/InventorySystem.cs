@@ -100,6 +100,7 @@ public class InventorySystem : MonoBehaviour
         {
             if (itemName == slot.item.itemName)
             {
+                Debug.Log(slot.quantity);
                 return slot.quantity;
             }
         }

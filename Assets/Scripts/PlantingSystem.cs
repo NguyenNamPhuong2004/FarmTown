@@ -1,12 +1,8 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.Tilemaps;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using System;
-using UnityEngine.UIElements;
-using UnityEngine.WSA;
+using UnityEngine;
+using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 public class PlantingSystem : MonoBehaviour
 {

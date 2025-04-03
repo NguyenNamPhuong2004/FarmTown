@@ -16,9 +16,9 @@ public class DataPlayer
             allData = new AllData
             {
                 tileDataList = new List<TileData>(),
-                animalTimeList = new List<AnimalTime>(),
-                itemQuantityList = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0 },
-                waitingSlotList = new List<WaitingSlotData>(),
+                animalTimeList = new List<AnimalData>(),
+                itemQuantityList = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                waitingSlotList = new List<WaitingSlot>(),
                 music = 0.5f,
                 sound = 0.5f
             };
@@ -40,15 +40,23 @@ public class DataPlayer
         allData.RemoveTileData(tileData);
         SaveData();
     } 
-    public static void AddWaitingSlotData(WaitingSlotData waitingSlotData)
+    public static void AddWaitingSlot(WaitingSlot waitingSlot)
     {
-        allData.AddWaitingSlotData(waitingSlotData);
+        allData.AddWaitingSlot(waitingSlot);
         SaveData();
     }
-    public static void RemoveWaitingSlotData(WaitingSlotData waitingSlotData)
+    public static void RemoveWaitingSlot(WaitingSlot waitingSlot)
     {
-        allData.RemoveWaitingSlotData(waitingSlotData);
+        allData.RemoveWaitingSlot(waitingSlot);
         SaveData();
+    }
+    public static WaitingSlot GetWaitingSlot(int id)
+    {
+        return allData.GetWaitingSlot(id);
+    }
+    public static int GetWaitingSlotListCount()
+    {
+        return allData.GetWaitingSlotListCount();
     }
     public static List<TileData> GetTileDataList()
     {
@@ -96,9 +104,9 @@ public class DataPlayer
 public class AllData
 {
     public List <TileData> tileDataList;
-    public List <AnimalTime> animalTimeList;
+    public List <AnimalData> animalTimeList;
     public List <int> itemQuantityList;
-    public List <WaitingSlotData> waitingSlotList;
+    public List <WaitingSlot> waitingSlotList;
     public float music;
     public float sound;
     public List<TileData> GetTileDataList()
@@ -115,13 +123,21 @@ public class AllData
     {       
         tileDataList.Remove(tileData);
     }
-    public void AddWaitingSlotData(WaitingSlotData waitingSlotData)
+    public void AddWaitingSlot(WaitingSlot waitingSlot)
     {
-        waitingSlotList.Add(waitingSlotData);
+        waitingSlotList.Add(waitingSlot);
     } 
-    public void RemoveWaitingSlotData(WaitingSlotData waitingSlotData)
+    public void RemoveWaitingSlot(WaitingSlot waitingSlot)
     {
-        waitingSlotList.Remove(waitingSlotData);
+        waitingSlotList.Remove(waitingSlot);
+    }
+    public WaitingSlot GetWaitingSlot(int id)
+    {
+        return waitingSlotList[id];
+    }
+    public int GetWaitingSlotListCount()
+    {
+        return waitingSlotList.Count;
     }
     public bool IsContain(int x, int y)
     {
@@ -194,27 +210,18 @@ public class TileData
     }
 }
 [Serializable]
-public class AnimalTime
+public class AnimalData
 {
+    public int id;
     public string endTime;
-    public bool isTime;
-    public AnimalData animalData;
-    public AnimalTime(string endTime, bool isTime, AnimalData selectedAnimal)
+    public AnimalTypeData animalTypeData;
+    public AnimalState state;
+    public AnimalData(int id, string endTime, AnimalTypeData animalTypeData, AnimalState state)
     {
+        this.id = id;
         this.endTime = endTime;
-        this.isTime = isTime;
-        this.animalData = selectedAnimal;
-    }
-}
-[Serializable]
-public class WaitingSlotData
-{
-    public string endTime;
-    public Item productItem;
-    public WaitingSlotData(string endTime, bool isTime, Item item)
-    {
-        this.endTime = endTime;
-        this.productItem = item;
+        this.animalTypeData = animalTypeData;
+        this.state = state;
     }
 }
 

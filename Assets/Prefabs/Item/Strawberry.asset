@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f45a1432e80159e4887aad3a2b3916e4, type: 3}
   m_Name: Strawberry
   m_EditorClassIdentifier: 
+  id: 4
   itemName: Strawberry
   itemSalePrice: 14
+  itemBuyPrice: 0
   itemSprite: {fileID: 21300122, guid: 2700e06d970d112489ff23cfb58c3f78, type: 3}

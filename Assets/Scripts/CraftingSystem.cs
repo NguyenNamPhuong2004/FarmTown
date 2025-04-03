@@ -7,17 +7,24 @@ public class CraftingSystem : MonoBehaviour
     public static CraftingSystem Instance;
     [SerializeField] private InventorySystem playerInventory;
     [SerializeField] private List<Recipe> recipes;
-    private List<WaitingSlot> waitingSlots = new List<WaitingSlot>();
+    public event Action OnWaitingSlotsUpdated;
 
-    public event Action<List<WaitingSlot>> OnWaitingSlotsUpdated;
+    public int waitingSlotUICount = 3;
     private void Awake() => Instance = this;
 
     public bool CanCraft(Recipe recipe)
     {
-        foreach (var ingredient in recipe.ingredients)
+        if (DataPlayer.GetWaitingSlotListCount() >= waitingSlotUICount)
         {
-            if (!playerInventory.HasItem(ingredient.item.itemName, ingredient.quantity))
-                return false;
+            Debug.Log("Waiting slot is filled");
+            return false;
+        }
+        if (!playerInventory.HasItem(recipe.ingredients[0].item.itemName, recipe.ingredients[0].quantity)) return false;
+        if (!playerInventory.HasItem(recipe.ingredients[1].item.itemName, recipe.ingredients[1].quantity)) return false;
+        if (recipe.ingredients[0].item == recipe.ingredients[1].item)
+        {
+            if(!playerInventory.HasItem(recipe.ingredients[1].item.itemName, recipe.ingredients[0].quantity + recipe.ingredients[1].quantity))
+            return false;
         }
         return true;
     }
@@ -25,21 +32,21 @@ public class CraftingSystem : MonoBehaviour
     public void Craft(Recipe recipe)
     {
         if (!CanCraft(recipe)) return;
-
+        
         foreach (var ingredient in recipe.ingredients)
             playerInventory.SubItem(ingredient.item.itemName, ingredient.quantity);
 
-        waitingSlots.Add(new WaitingSlot(recipe));
-        OnWaitingSlotsUpdated?.Invoke(waitingSlots);
+        DataPlayer.AddWaitingSlot(new WaitingSlot(recipe));
+        OnWaitingSlotsUpdated?.Invoke();
     }
 
     public void CollectItem(WaitingSlot slot)
     {
         if (!slot.IsCompleted()) return;
 
-        playerInventory.AddItem(slot.productName, 1);
-        waitingSlots.Remove(slot);
-        OnWaitingSlotsUpdated?.Invoke(waitingSlots);
+        playerInventory.AddItem(slot.productItem.itemName, 1);
+        DataPlayer.RemoveWaitingSlot(slot);
+        OnWaitingSlotsUpdated?.Invoke();
     }
     public Recipe GetRecipe(int index)
     {
@@ -49,6 +56,7 @@ public class CraftingSystem : MonoBehaviour
     }
     public int GetPlayerInventoryAmount(string itemName)
     {
+        Debug.Log(playerInventory.GetItemAmount(itemName));
         return playerInventory.GetItemAmount(itemName);
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Item", menuName = "ItemData")]
 public class Item : ScriptableObject
 {
+    public int id;
     public string itemName;
     public int itemSalePrice;
     public int itemBuyPrice;
