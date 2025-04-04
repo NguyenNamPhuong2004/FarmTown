@@ -16,7 +16,7 @@ public class DataPlayer
             allData = new AllData
             {
                 tileDataList = new List<TileData>(),
-                animalTimeList = new List<AnimalData>(),
+                animalDataList = new List<AnimalData>(),
                 itemQuantityList = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                 waitingSlotList = new List<WaitingSlot>(),
                 music = 0.5f,
@@ -84,6 +84,22 @@ public class DataPlayer
     {
         return allData.GetItemQuantity(id);
     }
+    public static void AddAnimalData(AnimalData animalData)
+    {
+        allData.AddAnimalData(animalData);
+        SaveData();
+    }
+
+    public static void RemoveAnimalData(AnimalData animalData)
+    {
+        allData.RemoveAnimalData(animalData);
+        SaveData();
+    }
+
+    public static AnimalData GetAnimalData(int id)
+    {
+        return allData.GetAnimalData(id);
+    }
     public static void SetMusic(float volume)
     {
         allData.SetMusic(volume);
@@ -104,7 +120,7 @@ public class DataPlayer
 public class AllData
 {
     public List <TileData> tileDataList;
-    public List <AnimalData> animalTimeList;
+    public List <AnimalData> animalDataList;
     public List <int> itemQuantityList;
     public List <WaitingSlot> waitingSlotList;
     public float music;
@@ -193,6 +209,27 @@ public class AllData
     {
         return sound;
     }
+    public void AddAnimalData(AnimalData animalData)
+    {
+        animalDataList.Add(animalData);
+    }
+    
+    public void RemoveAnimalData(AnimalData animalData) 
+    {  
+        animalDataList.Remove(animalData);
+    }
+    
+    public AnimalData GetAnimalData(int id)
+    {
+        foreach (var animal in animalDataList)
+        {
+            if (animal.id == id)
+            {
+                return animal;
+            }
+        }
+        return null;
+    }
 }
 [Serializable]
 public class TileData
@@ -216,12 +253,14 @@ public class AnimalData
     public string endTime;
     public AnimalTypeData animalTypeData;
     public AnimalState state;
-    public AnimalData(int id, string endTime, AnimalTypeData animalTypeData, AnimalState state)
+    public Vector3 position;
+    public AnimalData(int id, string endTime, AnimalTypeData animalTypeData, AnimalState state, Vector3 position)
     {
         this.id = id;
         this.endTime = endTime;
         this.animalTypeData = animalTypeData;
         this.state = state;
+        this.position = position;
     }
 }
 
