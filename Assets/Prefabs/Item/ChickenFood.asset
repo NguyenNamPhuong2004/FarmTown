@@ -16,4 +16,5 @@ MonoBehaviour:
   itemName: ChickenFood
   itemSalePrice: 23
   itemBuyPrice: 0
+  itemType: 4
   itemSprite: {fileID: 311674122, guid: fc242d6d56a57ec45bfef0c69293ad63, type: 3}

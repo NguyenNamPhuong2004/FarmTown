@@ -6,54 +6,31 @@ using UnityEngine;
 public class ProductionInfo : MonoBehaviour
 {
     private int currentAnimalId = -1;
+    public static event Action<string, TimeSpan> OnUpdateProductionUI;
+    public static event Action OnClearProductionUI;
 
-    private void OnEnable()
-    {
-        AnimalManager.Instance.OnShowProductionInfo += HandleShowProductionInfo;
-        AnimalManager.Instance.OnClearProductionInfo += HandleClearProductionInfo;
-    }
-
-    private void OnDisable()
-    {
-        AnimalManager.Instance.OnShowProductionInfo -= HandleShowProductionInfo;
-        AnimalManager.Instance.OnClearProductionInfo -= HandleClearProductionInfo;
-    }
-
-    private void HandleShowProductionInfo(int animalId, string animalName, TimeSpan remainingTime)
+    public void ShowProductionInfo(int animalId, string animalName, TimeSpan remainingTime)
     {
         currentAnimalId = animalId;
         UpdateProductionInfo(animalName, remainingTime);
     }
 
-    private void HandleClearProductionInfo()
+    public void ClearProductionInfo()
     {
-        ClearProductionInfo();
+        currentAnimalId = -1;
+        OnClearProductionUI?.Invoke();
     }
 
     private void UpdateProductionInfo(string animalName, TimeSpan remainingTime)
     {
-        ProductionInfoUI ui = FindObjectOfType<ProductionInfoUI>();
-        if (ui != null)
-        {
-            ui.UpdateDisplay(animalName, remainingTime);
-        }
-    }
-
-    private void ClearProductionInfo()
-    {
-        currentAnimalId = -1;
-        ProductionInfoUI ui = FindObjectOfType<ProductionInfoUI>();
-        if (ui != null)
-        {
-            ui.ClearDisplay();
-        }
+        OnUpdateProductionUI?.Invoke(animalName, remainingTime);
     }
 
     private void Update()
     {
         if (currentAnimalId != -1)
         {
-            Animal animal = AnimalManager.Instance.activeAnimals.ContainsKey(currentAnimalId)
+            Animal animal = AnimalManager.Instance.activeAnimals.Count > currentAnimalId
                 ? AnimalManager.Instance.activeAnimals[currentAnimalId].GetComponent<Animal>()
                 : null;
 

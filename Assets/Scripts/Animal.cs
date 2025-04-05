@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +12,8 @@ public class Animal : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
     private DateTime endTime;
+    private ProductionInfo productionInfo;
+
 
     private void Awake()
     {
@@ -24,7 +26,7 @@ public class Animal : MonoBehaviour
 
     public void Initialize(AnimalData animalData)
     {
-        Id = animalData.id;
+        Id = animalData.id; 
         State = animalData.state;
         AnimalTypeData = animalData.animalTypeData;
         EndTimeString = animalData.endTime;
@@ -38,14 +40,6 @@ public class Animal : MonoBehaviour
         CheckProductionState();
     }
 
-    private void Update()
-    {
-        if (State == AnimalState.Full)
-        {
-            CheckProductionState();
-        }
-    }
-
     private void CheckProductionState()
     {
         if (State == AnimalState.Full && !string.IsNullOrEmpty(EndTimeString))
@@ -53,7 +47,7 @@ public class Animal : MonoBehaviour
             if (DateTime.Now >= endTime)
             {
                 State = AnimalState.Product;
-                AnimalManager.Instance.ClearProductionInfo();
+                productionInfo.ClearProductionInfo();
             }
         }
     }
@@ -79,9 +73,22 @@ public class Animal : MonoBehaviour
         TimeSpan remaining = endTime - DateTime.Now;
         return remaining > TimeSpan.Zero ? remaining : TimeSpan.Zero;
     }
-
     private void OnMouseDown()
     {
-        AnimalManager.Instance.OnAnimalClicked(Id);
+        AnimalManager.Instance.OnAnimalClicked(Id, false); 
+    }
+
+    
+    private void OnMouseOver()
+    {
+        if (Input.GetMouseButtonDown(1)) 
+        {
+            AnimalManager.Instance.OnAnimalClicked(Id, true);
+        }
+    }
+
+    public void UpdateId(int newId)
+    {
+        Id = newId;
     }
 }

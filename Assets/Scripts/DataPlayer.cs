@@ -100,6 +100,11 @@ public class DataPlayer
     {
         return allData.GetAnimalData(id);
     }
+    public static void UpdateAnimalData(int id, AnimalState state, string endTime, Vector3 position)
+    {
+        allData.UpdateAnimalData(id, state, endTime, position);
+        SaveData();
+    }
     public static void SetMusic(float volume)
     {
         allData.SetMusic(volume);
@@ -229,6 +234,16 @@ public class AllData
             }
         }
         return null;
+    }
+    public void UpdateAnimalData(int id, AnimalState state, string endTime, Vector3 position)
+    {
+        AnimalData animalData = GetAnimalData(id);
+        if (animalData != null)
+        {
+            animalData.state = state;
+            animalData.endTime = endTime;
+            animalData.position = position;
+        }
     }
 }
 [Serializable]

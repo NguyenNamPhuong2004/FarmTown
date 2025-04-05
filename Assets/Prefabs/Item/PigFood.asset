@@ -16,4 +16,5 @@ MonoBehaviour:
   itemName: PigFood
   itemSalePrice: 25
   itemBuyPrice: 0
+  itemType: 4
   itemSprite: {fileID: 238722090, guid: 73c8a032afbb69946b3bd998d9e583fe, type: 3}

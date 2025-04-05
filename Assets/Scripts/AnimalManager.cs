@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,11 +10,9 @@ public class AnimalManager : MonoBehaviour
     public GameObject animalPrefab;
     public Transform animalParent;
 
-    public Dictionary<int, GameObject> activeAnimals = new Dictionary<int, GameObject>();
-    private int nextAnimalId = 0;
-
-    public event Action<int, string, TimeSpan> OnShowProductionInfo;
-    public event Action OnClearProductionInfo;
+    public List<GameObject> activeAnimals = new List<GameObject>(); 
+    private ProductionInfo productionInfo;
+    public InventorySystem inventorySystem;
 
     private void Awake()
     {
@@ -22,6 +20,12 @@ public class AnimalManager : MonoBehaviour
             Instance = this;
         else
             Destroy(gameObject);
+
+        productionInfo = FindObjectOfType<ProductionInfo>();
+        if (productionInfo == null)
+        {
+            Debug.LogError("ProductionInfo not found in the scene!");
+        }
     }
 
     private void Start()
@@ -31,15 +35,10 @@ public class AnimalManager : MonoBehaviour
 
     private void LoadAnimals()
     {
+        activeAnimals.Clear(); 
         foreach (var animalData in DataPlayer.allData.animalDataList)
         {
             SpawnAnimal(animalData);
-        }
-
-        foreach (var animalData in DataPlayer.allData.animalDataList)
-        {
-            if (animalData.id >= nextAnimalId)
-                nextAnimalId = animalData.id + 1;
         }
     }
 
@@ -51,15 +50,17 @@ public class AnimalManager : MonoBehaviour
             return;
         }
 
+        int newId = DataPlayer.allData.animalDataList.Count;
         AnimalData animalData = new AnimalData(
-            nextAnimalId++,
+            newId,
             "",
             animalTypes[animalTypeIndex],
             AnimalState.Hungry,
             position
         );
 
-        DataPlayer.AddAnimalData(animalData);
+        DataPlayer.allData.AddAnimalData(animalData);
+      
 
         SpawnAnimal(animalData);
     }
@@ -71,111 +72,92 @@ public class AnimalManager : MonoBehaviour
 
         animalComponent.Initialize(animalData);
 
-        activeAnimals[animalData.id] = animalObj;
+        activeAnimals.Add(animalObj); 
     }
 
-    public void OnAnimalClicked(int animalId)
+    public void OnAnimalClicked(int animalId, bool isRightClick = false)
     {
-        if (!activeAnimals.ContainsKey(animalId))
+        if (animalId < 0 || animalId >= activeAnimals.Count)
             return;
 
         Animal animal = activeAnimals[animalId].GetComponent<Animal>();
 
-        switch (animal.State)
+        if (isRightClick)
         {
-            case AnimalState.Hungry:
-                TryFeedAnimal(animal);
-                break;
+            SellAnimal(animalId);
+        }
+        else
+        {
+            switch (animal.State)
+            {
+                case AnimalState.Hungry:
+                    TryFeedAnimal(animal);
+                    break;
 
-            case AnimalState.Full:
-                ShowProductionProgress(animal);
-                break;
+                case AnimalState.Full:
+                    ShowProductionProgress(animal);
+                    break;
 
-            case AnimalState.Product:
-                CollectProduct(animal);
-                break;
+                case AnimalState.Product:
+                    CollectProduct(animal);
+                    break;
+            }
         }
     }
 
     private void TryFeedAnimal(Animal animal)
     {
-        int foodItemId = GetFoodItemIdForAnimal(animal.AnimalTypeData.animalName);
-
-        if (DataPlayer.GetItemQuantity(foodItemId) > 0)
+        string foodName = animal.AnimalTypeData.foodName; 
+        if (inventorySystem.HasItem(foodName, 1)) 
         {
-            DataPlayer.SubItemQuantity(foodItemId, 1);
+            inventorySystem.SubItem(foodName, 1); 
             animal.Feed();
-            UpdateAnimalData(animal);
+            DataPlayer.UpdateAnimalData(animal.Id, animal.State, animal.EndTimeString, animal.transform.position);
         }
         else
         {
-            Debug.Log("You need " + GetFoodNameForAnimal(animal.AnimalTypeData.animalName));
-        }
-    }
-
-    private int GetFoodItemIdForAnimal(string animalName)
-    {
-        switch (animalName.ToLower())
-        {
-            case "cow": return 1;
-            case "chicken": return 2;
-            case "pig": return 3;
-            default: return 0;
-        }
-    }
-
-    private string GetFoodNameForAnimal(string animalName)
-    {
-        switch (animalName.ToLower())
-        {
-            case "cow": return "Cattle Feed";
-            case "chicken": return "Chicken Feed";
-            case "pig": return "Pig Feed";
-            default: return "Animal Feed";
+            Debug.Log("You need " + foodName);
         }
     }
 
     private void ShowProductionProgress(Animal animal)
-    { 
-        OnShowProductionInfo?.Invoke(animal.Id, animal.AnimalTypeData.animalName, animal.GetRemainingTime());
+    {
+        if (productionInfo != null)
+        {
+            productionInfo.ShowProductionInfo(animal.Id, animal.AnimalTypeData.animalName, animal.GetRemainingTime());
+        }
     }
 
     private void CollectProduct(Animal animal)
     {
-        int productId = GetProductIdForAnimal(animal.AnimalTypeData.animalName);
-        DataPlayer.AddItemQuantity(productId, 1);
+        string productName = animal.AnimalTypeData.productName; 
+        inventorySystem.AddItem(productName, 1); 
         animal.ResetToHungry();
-        UpdateAnimalData(animal);
-        OnClearProductionInfo?.Invoke();
+        DataPlayer.UpdateAnimalData(animal.Id, animal.State, animal.EndTimeString, animal.transform.position);
     }
 
-    private int GetProductIdForAnimal(string animalName)
+    private void SellAnimal(int animalId)
     {
-        switch (animalName.ToLower())
-        {
-            case "cow": return 4;
-            case "chicken": return 5;
-            case "pig": return 6;
-            default: return 0;
-        }
-    }
+        if (animalId < 0 || animalId >= activeAnimals.Count)
+            return;
 
-    private void UpdateAnimalData(Animal animal)
-    {
-        for (int i = 0; i < DataPlayer.allData.animalDataList.Count; i++)
+        GameObject animalObj = activeAnimals[animalId];
+        Destroy(animalObj);
+
+        activeAnimals.RemoveAt(animalId);
+        DataPlayer.allData.animalDataList.RemoveAt(animalId);
+
+        for (int i = 0; i < activeAnimals.Count; i++)
         {
-            if (DataPlayer.allData.animalDataList[i].id == animal.Id)
-            {
-                AnimalData animalData = DataPlayer.allData.animalDataList[i];
-                animalData.state = animal.State;
-                animalData.endTime = animal.EndTimeString;
-                animalData.position = animal.transform.position;
-                break;
-            }
+            Animal animal = activeAnimals[i].GetComponent<Animal>();
+            animal.UpdateId(i);
+            DataPlayer.allData.animalDataList[i].id = i;
         }
-    }
-    public void ClearProductionInfo()
-    {
-        OnClearProductionInfo?.Invoke();
+
+
+        if (productionInfo != null)
+        {
+            productionInfo.ClearProductionInfo();
+        }
     }
 }

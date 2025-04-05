@@ -1,44 +1,80 @@
+﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
 
 public class Shop : MonoBehaviour
 {
-    public List<ShopSlot> slots = new List<ShopSlot>();
+    private Dictionary<ItemType, ShopSlot> shopSlots = new Dictionary<ItemType, ShopSlot>();
+    private InventorySystem inventory;
+    private PlacementManager placementManager;
+    private int playerMoney = 1000;
+    [SerializeField] private Item[] allItems;
 
-    public Text costText;
-    public Image Icon;
-    public Text productName;
-    public Button buy;
-    public Button[] selectItems;
-    public ShopSlot itemSlotSelected;
-    public InventorySystem inventory;
+    public event Action<ItemType> OnShopUpdated; 
+    public event Action<int> OnMoneyUpdated; 
 
-    private void Awake()
+    void Start()
     {
-        itemSlotSelected = slots[0];
-        for (int i = 0; i < slots.Count; i++)
+        inventory = FindObjectOfType<InventorySystem>();
+        placementManager = FindObjectOfType<PlacementManager>();
+        InitializeShopSlots();
+        OnShopUpdated?.Invoke(ItemType.Crop); 
+        OnMoneyUpdated?.Invoke(playerMoney);
+    }
+
+    void InitializeShopSlots()
+    {
+        shopSlots[ItemType.Crop] = new ShopSlot(ItemType.Crop, allItems);
+        shopSlots[ItemType.Animal] = new ShopSlot(ItemType.Animal, allItems);
+        shopSlots[ItemType.Building] = new ShopSlot(ItemType.Building, allItems);
+        shopSlots[ItemType.Food] = new ShopSlot(ItemType.Food, allItems);
+        shopSlots[ItemType.Other] = new ShopSlot(ItemType.Other, allItems);
+    }
+
+    public bool BuyFromShop(ItemType shopType, int itemId, int quantity = 1)
+    {
+        if (shopSlots.ContainsKey(shopType))
         {
-            int index = i;
-            selectItems[i].onClick.AddListener(() => SelectItem(slots[index]));
+            bool success = shopSlots[shopType].BuyItem(itemId, quantity, ref playerMoney, inventory, placementManager);
+            if (success)
+            {
+                OnMoneyUpdated?.Invoke(playerMoney);
+                OnShopUpdated?.Invoke(shopType);
+            }
+            return success;
         }
+        Debug.Log("ShopSlot không tồn tại!");
+        return false;
     }
-    private void Update()
+
+    public bool SellToShop(ItemType shopType, int itemId, int quantity = 1)
     {
-        UpdateItemSelected();
+        if (shopSlots.ContainsKey(shopType))
+        {
+            bool success = shopSlots[shopType].SellItem(itemId, quantity, ref playerMoney, inventory);
+            if (success)
+            {
+                OnMoneyUpdated?.Invoke(playerMoney);
+                OnShopUpdated?.Invoke(shopType);
+            }
+            return success;
+        }
+        Debug.Log("ShopSlot không tồn tại!");
+        return false;
     }
-    private void UpdateItemSelected()
+
+    public List<Item> GetShopItems(ItemType shopType)
     {
-        Icon.sprite = itemSlotSelected.item.itemSprite;
-        productName.text = itemSlotSelected.item.itemName;
-        costText.text = itemSlotSelected.item.itemBuyPrice.ToString();
+        return shopSlots.ContainsKey(shopType) ? shopSlots[shopType].GetItems() : new List<Item>();
     }
-    private void SelectItem(ShopSlot item)
+
+    public int GetStock(int itemId)
     {
-        itemSlotSelected = item;
+        return DataPlayer.GetItemQuantity(itemId);
     }
-    public void Buy()
+
+    public int GetPlayerMoney()
     {
-        inventory.AddItem(itemSlotSelected.item.itemName, 1);
-    }   
+        return playerMoney;
+    }
 }
