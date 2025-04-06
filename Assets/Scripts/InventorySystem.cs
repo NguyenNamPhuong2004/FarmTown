@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class InventorySystem : MonoBehaviour
 {
-    private List<InventorySlot> slots = new List<InventorySlot>();
+    public List<InventorySlot> slots = new List<InventorySlot>();
     private InventorySlot itemSlotSelected;
 
     public event Action OnInventoryUpdated; 
@@ -15,17 +15,28 @@ public class InventorySystem : MonoBehaviour
         itemSlotSelected = slots[0];
     }
 
-    void Start()
+    private void Start()
     {
         Debug.Log("Available inventory items:");
         foreach (InventorySlot slot in slots)
         {
+            slot.quantity = DataPlayer.GetItemQuantity(slot.item.id);
             Debug.Log("- " + slot.item.itemName);
         }
         OnInventoryUpdated?.Invoke();
         OnItemSelected?.Invoke(itemSlotSelected);
     }
-
+    private void OnEnable()
+    {
+        Debug.Log("Available inventory items:");
+        foreach (InventorySlot slot in slots)
+        {
+            slot.quantity = DataPlayer.GetItemQuantity(slot.item.id);
+            Debug.Log("- " + slot.item.itemName);
+        }
+        OnInventoryUpdated?.Invoke();
+        OnItemSelected?.Invoke(itemSlotSelected);
+    }
     public void SelectItem(InventorySlot item)
     {
         itemSlotSelected = item;
@@ -89,7 +100,23 @@ public class InventorySystem : MonoBehaviour
         }
         return false;
     }
-
+    public bool SellItem(string itemName, int quantity)
+    {
+        foreach (InventorySlot slot in slots)
+        {
+            if (itemName == slot.item.itemName && slot.quantity >= quantity)
+            {
+                int totalEarn = slot.item.itemSalePrice * quantity;
+                DataPlayer.AddCoin(totalEarn);
+                slot.SubItem(quantity);
+                OnInventoryUpdated?.Invoke();
+                Debug.Log($"Đã bán {quantity} {itemName} với giá {totalEarn}");
+                return true;
+            }
+        }
+        Debug.Log("Không đủ item trong inventory để bán!");
+        return false;
+    }
     public List<InventorySlot> GetSlots()
     {
         return slots;

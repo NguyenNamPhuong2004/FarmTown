@@ -8,6 +8,8 @@ public class DataPlayer
 {
     private const string ALL_DATA = "all_data";
     public static AllData allData;
+
+    public static event Action UpdateCoinEvent;
     static DataPlayer()
     {
         allData = JsonUtility.FromJson<AllData>(PlayerPrefs.GetString(ALL_DATA));
@@ -17,8 +19,11 @@ public class DataPlayer
             {
                 tileDataList = new List<TileData>(),
                 animalDataList = new List<AnimalData>(),
-                itemQuantityList = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                itemQuantityList = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                 waitingSlotList = new List<WaitingSlot>(),
+                coin = 1000,
+                inventoryMax = 50,
+                totalItemQuantity = 0,
                 music = 0.5f,
                 sound = 0.5f
             };
@@ -84,6 +89,43 @@ public class DataPlayer
     {
         return allData.GetItemQuantity(id);
     }
+    public static int GetCoin()
+    {
+        return allData.GetCoin();
+    }
+    public static void SubCoin(int cost)
+    {
+        allData.SubCoin(cost);
+        UpdateCoinEvent?.Invoke();
+        SaveData();
+    }
+    public static bool IsEnoughMoney(int cost)
+    {
+        return allData.IsEnoughMoney(cost);
+    }
+    public static void AddCoin(int money)
+    {
+        allData.AddCoin(money);
+        UpdateCoinEvent?.Invoke();
+        SaveData();
+    }
+    public static void SetInventoryMax()
+    {
+        allData.SetInventoryMax();
+        SaveData();
+    }
+    public static int GetInventoryMax()
+    {
+        return allData.GetInventoryMax();
+    }
+    public static int GetTotalItemQuantity()
+    {
+        return allData.GetTotalItemQuantity();
+    } 
+    public static bool IsInventoryMax()
+    {
+        return allData.IsInventoryMax();
+    }
     public static void AddAnimalData(AnimalData animalData)
     {
         allData.AddAnimalData(animalData);
@@ -104,6 +146,14 @@ public class DataPlayer
     {
         allData.UpdateAnimalData(id, state, endTime, position);
         SaveData();
+    }
+    public static void AddListenerUpdateCoinEvent(Action updateCoin)
+    {
+        UpdateCoinEvent += updateCoin;
+    }
+    public static void RemoveListenerUpdateCoinEvent(Action updateCoin)
+    {
+        UpdateCoinEvent -= updateCoin;
     }
     public static void SetMusic(float volume)
     {
@@ -128,6 +178,9 @@ public class AllData
     public List <AnimalData> animalDataList;
     public List <int> itemQuantityList;
     public List <WaitingSlot> waitingSlotList;
+    public int coin;
+    public int inventoryMax;
+    public int totalItemQuantity;
     public float music;
     public float sound;
     public List<TileData> GetTileDataList()
@@ -186,17 +239,51 @@ public class AllData
         return null;
     }
     public void AddItemQuantity(int id, int quantity)
-    {
+    { 
         itemQuantityList[id] += quantity;
+        totalItemQuantity += quantity;
     }
     public void SubItemQuantity(int id, int quantity)
     {
         if (itemQuantityList[id] <= 0) return;
         itemQuantityList[id] -= quantity;
+        totalItemQuantity -= quantity;
     }
     public int GetItemQuantity(int id)
     {
         return itemQuantityList[id]; 
+    }
+    public void SubCoin(int cost)
+    {
+        coin -= cost;
+    }
+    public int GetCoin()
+    {
+        return coin;
+    }
+    public bool IsEnoughMoney(int cost)
+    {
+        return coin >= cost;
+    }
+    public void AddCoin(int money)
+    {
+        coin += money;
+    }
+    public void SetInventoryMax()
+    {
+        inventoryMax += 50;
+    }
+    public int GetInventoryMax()
+    {
+        return inventoryMax;
+    }
+    public int GetTotalItemQuantity()
+    {
+        return totalItemQuantity;
+    }
+    public bool IsInventoryMax()
+    {
+        return totalItemQuantity >= inventoryMax;
     }
     public void SetMusic(float volume)
     {

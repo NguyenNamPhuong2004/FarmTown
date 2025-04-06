@@ -15,5 +15,6 @@ MonoBehaviour:
   id: 4
   itemName: Strawberry
   itemSalePrice: 14
-  itemBuyPrice: 0
+  itemBuyPrice: 16
+  itemType: 1
   itemSprite: {fileID: 21300122, guid: 2700e06d970d112489ff23cfb58c3f78, type: 3}

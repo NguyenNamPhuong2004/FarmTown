@@ -15,5 +15,6 @@ MonoBehaviour:
   id: 7
   itemName: Radish
   itemSalePrice: 17
-  itemBuyPrice: 0
+  itemBuyPrice: 20
+  itemType: 1
   itemSprite: {fileID: 21300118, guid: 2700e06d970d112489ff23cfb58c3f78, type: 3}

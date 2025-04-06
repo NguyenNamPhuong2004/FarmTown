@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f45a1432e80159e4887aad3a2b3916e4, type: 3}
   m_Name: Rice
   m_EditorClassIdentifier: 
+  id: 0
   itemName: Rice
   itemSalePrice: 10
+  itemBuyPrice: 12
+  itemType: 1
   itemSprite: {fileID: 21300104, guid: 2700e06d970d112489ff23cfb58c3f78, type: 3}

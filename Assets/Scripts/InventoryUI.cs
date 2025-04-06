@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class InventoryUI : MonoBehaviour
 {
     [SerializeField] private InventorySystem inventorySystem; 
-    [SerializeField] private GameObject inventoryPanel;
     [SerializeField] private Button[] selectItems; 
     [SerializeField] private Text saleQuantityText;
     [SerializeField] private Text salePriceText;
@@ -14,6 +13,7 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private Button sellBtn;
     [SerializeField] private Button addBtn;
     [SerializeField] private Button subBtn;
+    [SerializeField] private Text InventoryLimit;
 
     private int saleQuantity = 0;
 
@@ -21,7 +21,7 @@ public class InventoryUI : MonoBehaviour
     {
         inventorySystem.OnInventoryUpdated += UpdateInventoryUI;
         inventorySystem.OnItemSelected += UpdateSelectedItemUI;
-
+        selectItems = transform.Find("Viewport").GetComponentsInChildren<Button>();
         for (int i = 0; i < selectItems.Length; i++)
         {
             int index = i;
@@ -35,18 +35,24 @@ public class InventoryUI : MonoBehaviour
         UpdateInventoryUI();
     }
 
-   
+    
     private void UpdateInventoryUI()
     {
+        InventoryLimit.text = "Limit: " + DataPlayer.GetTotalItemQuantity() + "/" + DataPlayer.GetInventoryMax();
         List<InventorySlot> slots = inventorySystem.GetSlots();
         for (int i = 0; i < slots.Count; i++)
         {
             if (i < selectItems.Length)
             {
-                Text quantityText = selectItems[i].transform.Find("QuantityText")?.GetComponent<Text>();
+                Image itemSprite = selectItems[i].transform.GetComponent<Image>();
+                if (itemSprite != null)
+                {
+                    itemSprite.sprite = slots[i].item.itemSprite;
+                }
+                Text quantityText = selectItems[i].transform.Find("Quantity").GetComponent<Text>();
                 if (quantityText != null)
                 {
-                    quantityText.text = slots[i].quantity.ToString();
+                    quantityText.text = "x " + slots[i].quantity;
                     selectItems[i].gameObject.SetActive(slots[i].quantity > 0);
                 }
             }
@@ -83,8 +89,10 @@ public class InventoryUI : MonoBehaviour
     private void Sell()
     {
         InventorySlot selectedSlot = inventorySystem.GetSelectedSlot();
-        FindObjectOfType<Shop>().SellToShop(selectedSlot.item.itemType, selectedSlot.item.id, saleQuantity);
-        saleQuantity = 0;
-        UpdateSelectedItemUI(selectedSlot);
+        if (inventorySystem.SellItem(selectedSlot.item.itemName, saleQuantity))
+        {
+            saleQuantity = 0;
+            UpdateSelectedItemUI(selectedSlot);          
+        }
     }
 }

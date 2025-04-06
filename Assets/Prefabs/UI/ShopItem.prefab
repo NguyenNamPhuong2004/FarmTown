@@ -291,7 +291,7 @@ GameObject:
   - component: {fileID: 4605203772965684774}
   - component: {fileID: 4605203772965684775}
   m_Layer: 5
-  m_Name: Money Text
+  m_Name: MoneyText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -462,7 +462,7 @@ GameObject:
   - component: {fileID: 585234876858113947}
   - component: {fileID: 578561651129189551}
   m_Layer: 5
-  m_Name: itemName
+  m_Name: ItemName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -15,5 +15,6 @@ MonoBehaviour:
   id: 6
   itemName: Carrot
   itemSalePrice: 16
-  itemBuyPrice: 0
-  itemSprite: {fileID: 21300104, guid: 2700e06d970d112489ff23cfb58c3f78, type: 3}
+  itemBuyPrice: 18
+  itemType: 1
+  itemSprite: {fileID: 21300120, guid: 2700e06d970d112489ff23cfb58c3f78, type: 3}

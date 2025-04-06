@@ -1,9 +1,9 @@
 
 public enum ItemType
 {
-    Crop, 
+    None,
+    Product, 
     Animal, 
     Building,
-    Food, 
     Other
 }

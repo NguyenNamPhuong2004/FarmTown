@@ -40,16 +40,9 @@ public class AnimalManager : MonoBehaviour
         {
             SpawnAnimal(animalData);
         }
-    }
-
-    public void BuyAnimal(int animalTypeIndex, Vector3 position)
+    } 
+    public void SpawnAnimalAfterPlacement(Vector3 position, int animalTypeIndex)
     {
-        if (animalTypeIndex < 0 || animalTypeIndex >= animalTypes.Count)
-        {
-            Debug.LogError("Invalid animal type index: " + animalTypeIndex);
-            return;
-        }
-
         int newId = DataPlayer.allData.animalDataList.Count;
         AnimalData animalData = new AnimalData(
             newId,
@@ -60,8 +53,6 @@ public class AnimalManager : MonoBehaviour
         );
 
         DataPlayer.allData.AddAnimalData(animalData);
-      
-
         SpawnAnimal(animalData);
     }
 

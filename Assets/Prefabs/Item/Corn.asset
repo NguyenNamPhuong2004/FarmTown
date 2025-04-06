@@ -15,5 +15,6 @@ MonoBehaviour:
   id: 3
   itemName: Corn
   itemSalePrice: 13
-  itemBuyPrice: 0
+  itemBuyPrice: 15
+  itemType: 1
   itemSprite: {fileID: 21300108, guid: 2700e06d970d112489ff23cfb58c3f78, type: 3}

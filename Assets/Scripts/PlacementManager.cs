@@ -3,18 +3,16 @@
 public class PlacementManager : MonoBehaviour
 {
     private Item currentItem;
-    private GameObject previewObject;
+    [SerializeField] private GameObject previewObject;
     private bool isPlacing = false;
-    private int remainingQuantity;
     private SpriteRenderer previewSprite;
-
-    public LayerMask groundLayer; // Layer mặt đất
-    public LayerMask obstacleLayer; // Layer công trình, vật nuôi, cây trồng
-    public Camera mainCamera;
+    public LayerMask groundLayer;
+  
+    private AnimalManager animalManager;
 
     void Start()
     {
-        if (mainCamera == null) mainCamera = Camera.main;
+        animalManager = FindObjectOfType<AnimalManager>();
     }
 
     void Update()
@@ -22,6 +20,7 @@ public class PlacementManager : MonoBehaviour
         if (isPlacing && previewObject != null)
         {
             MovePreviewObject();
+            UpdatePreviewColor();
             if (Input.GetMouseButtonDown(0) && IsValidPosition())
             {
                 PlaceObject();
@@ -33,93 +32,59 @@ public class PlacementManager : MonoBehaviour
         }
     }
 
-    public void StartPlacing(Item item, int quantity)
+    public void StartPlacing(Item item)
     {
         currentItem = item;
-        remainingQuantity = quantity;
         isPlacing = true;
 
-        // Tạo object preview 2D
-        previewObject = new GameObject("Preview");
-        previewSprite = previewObject.AddComponent<SpriteRenderer>();
+        if (previewObject == null)
+        {
+            previewObject = new GameObject("Preview");
+            previewSprite = previewObject.AddComponent<SpriteRenderer>();
+        }
         previewSprite.sprite = item.itemSprite;
-        previewSprite.color = new Color(1, 1, 1, 0.5f); // Trong suốt 50%
-        previewObject.AddComponent<BoxCollider2D>(); // Thêm collider để kiểm tra
-    }
-
-    private void MovePreviewObject()
-    {
-        Vector2 mousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        previewObject.transform.position = new Vector3(mousePos.x, mousePos.y, 0);
-    }
-
-    private bool IsValidPosition()
-    {
-        Collider2D[] overlaps = Physics2D.OverlapBoxAll(
-            previewObject.transform.position,
-            previewObject.GetComponent<BoxCollider2D>().size,
-            0,
-            obstacleLayer
-        );
-
-        if (overlaps.Length > 0)
-        {
-            Debug.Log("Vị trí không hợp lệ: Đè lên vật thể khác!");
-            return false;
-        }
-
-        Collider2D groundHit = Physics2D.OverlapPoint(previewObject.transform.position, groundLayer);
-        if (groundHit == null)
-        {
-            Debug.Log("Vị trí không hợp lệ: Không nằm trên mặt đất!");
-            return false;
-        }
-
-        return true;
+        previewSprite.color = new Color(1, 1, 1, 0.5f); // Màu trong suốt để xem trước
+        previewObject.SetActive(true);
     }
 
     private void PlaceObject()
     {
-        remainingQuantity--;
-        Debug.Log($"Đã đặt {currentItem.itemName} (ID: {currentItem.id}) tại {previewObject.transform.position}");
-
+        Vector3 position = previewObject.transform.position;
         if (currentItem.itemType == ItemType.Animal)
         {
-            DataPlayer.AddAnimalData(new AnimalData(
-                DataPlayer.allData.animalDataList.Count,
-                "",
-                null, 
-                AnimalState.Hungry,
-                previewObject.transform.position
-            ));
+            animalManager.SpawnAnimalAfterPlacement(position, currentItem.id); // Spawn thú tại vị trí đã chọn
         }
         else if (currentItem.itemType == ItemType.Building)
         {
-            // Lưu dữ liệu công trình nếu cần, ví dụ vào tileDataList hoặc danh sách riêng
-            Debug.Log("Đã đặt công trình, bạn có thể xử lý thêm logic lưu trữ ở đây.");
-        }
-
-        if (remainingQuantity > 0)
-        {
-            previewObject = new GameObject("Preview");
-            previewSprite = previewObject.AddComponent<SpriteRenderer>();
-            previewSprite.sprite = currentItem.itemSprite;
-            previewSprite.color = new Color(1, 1, 1, 0.5f);
-            previewObject.AddComponent<BoxCollider2D>();
-        }
-        else
-        {
-            Destroy(previewObject);
-            isPlacing = false;
-            previewObject = null;
+            DataPlayer.SetInventoryMax();
         }
     }
 
     private void CancelPlacing()
     {
-        Destroy(previewObject);
+        if (previewObject != null)
+        {
+            previewObject.SetActive(false);
+        }
         isPlacing = false;
-        previewObject = null;
-        Debug.Log("Đã hủy đặt item!");
+    }
+
+    private void MovePreviewObject()
+    {
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePos.z = 0;
+        previewObject.transform.position = mousePos;
+    }
+    private void UpdatePreviewColor()
+    {
+        previewSprite.color = IsValidPosition()
+            ? new Color(1, 1, 1, 0.5f) // Trong suốt khi hợp lệ
+            : new Color(1, 0, 0, 0.5f); // Đỏ khi không hợp lệ
+    }
+    private bool IsValidPosition()
+    {
+        // Kiểm tra vị trí hợp lệ (có thể tùy chỉnh thêm)
+        Collider2D hit = Physics2D.OverlapPoint(previewObject.transform.position, groundLayer);
+        return hit != null; // Đảm bảo vị trí nằm trên groundLayer
     }
 }
