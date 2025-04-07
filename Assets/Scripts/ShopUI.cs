@@ -15,7 +15,7 @@ public class ShopUI : MonoBehaviour
         shop.OnShopUpdated += DisplayShopUI;      
         for (int i = 0; i < shopTypeButtons.Length; i++)
         {
-            ItemType type = (ItemType)i;
+            ItemType type = (ItemType)i+1;
             shopTypeButtons[i].onClick.AddListener(() => DisplayShopUI(type));
         }
 

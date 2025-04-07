@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 7
   itemName: Radish
-  itemSalePrice: 17
-  itemBuyPrice: 20
+  itemSalePrice: 50
+  itemBuyPrice: 35
   itemType: 1
   itemSprite: {fileID: 21300118, guid: 2700e06d970d112489ff23cfb58c3f78, type: 3}

@@ -7,15 +7,18 @@ public class PlacementManager : MonoBehaviour
     private bool isPlacing = false;
     private SpriteRenderer previewSprite;
     public LayerMask groundLayer;
+    private int cost;
   
     private AnimalManager animalManager;
+    private TreeManager treeManager;
 
-    void Start()
+    private void Start()
     {
         animalManager = FindObjectOfType<AnimalManager>();
+        treeManager = FindObjectOfType<TreeManager>();
     }
 
-    void Update()
+    private void Update()
     {
         if (isPlacing && previewObject != null)
         {
@@ -32,9 +35,10 @@ public class PlacementManager : MonoBehaviour
         }
     }
 
-    public void StartPlacing(Item item)
+    public void StartPlacing(Item item, int cost)
     {
         currentItem = item;
+        this.cost = cost;
         isPlacing = true;
 
         if (previewObject == null)
@@ -43,20 +47,25 @@ public class PlacementManager : MonoBehaviour
             previewSprite = previewObject.AddComponent<SpriteRenderer>();
         }
         previewSprite.sprite = item.itemSprite;
-        previewSprite.color = new Color(1, 1, 1, 0.5f); // Màu trong suốt để xem trước
+        previewSprite.color = new Color(1, 1, 1, 0.5f); 
         previewObject.SetActive(true);
     }
 
     private void PlaceObject()
     {
+        DataPlayer.SubCoin(cost);
         Vector3 position = previewObject.transform.position;
         if (currentItem.itemType == ItemType.Animal)
         {
-            animalManager.SpawnAnimalAfterPlacement(position, currentItem.id); // Spawn thú tại vị trí đã chọn
+            animalManager.SpawnAnimalAfterPlacement(position, currentItem.itemName); 
         }
         else if (currentItem.itemType == ItemType.Building)
         {
             DataPlayer.SetInventoryMax();
+        }
+        else if (currentItem.itemType == ItemType.Other)
+        {
+            treeManager.SpawnTreeAfterPlacement(position);
         }
     }
 

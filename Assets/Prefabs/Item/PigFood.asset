@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 10
   itemName: PigFood
-  itemSalePrice: 25
-  itemBuyPrice: 32
+  itemSalePrice: 40
+  itemBuyPrice: 0
   itemType: 0
   itemSprite: {fileID: 238722090, guid: 73c8a032afbb69946b3bd998d9e583fe, type: 3}

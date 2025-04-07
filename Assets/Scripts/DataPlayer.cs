@@ -363,6 +363,24 @@ public class AnimalData
         this.animalTypeData = animalTypeData;
         this.state = state;
         this.position = position;
+    } 
+}
+[Serializable]
+public class TreeData
+{
+    public int id;
+    public string treeName;
+    public Vector3 position;
+    public bool hasFruit;
+    public float remainingTime;
+
+    public TreeData(int id, string name, Vector3 position, int remainingTime)
+    {
+        this.id = id;
+        this.treeName = name;
+        this.position = position;
+        this.hasFruit = false;
+        this.remainingTime = remainingTime;
     }
 }
 

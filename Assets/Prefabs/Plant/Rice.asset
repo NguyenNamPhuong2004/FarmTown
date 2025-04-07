@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Rice
   m_EditorClassIdentifier: 
   plantName: Rice
+  plantCost: 10
   seedlingTile: {fileID: 11400000, guid: 018ad0e55c1eea947a58061d3b74d764, type: 2}
   youngPlantTile: {fileID: 11400000, guid: 43a2bc2bc8a6e5d409188836076f01e9, type: 2}
   maturePlantTile: {fileID: 11400000, guid: f55c705ed79a15a4c82416ea4b2686be, type: 2}

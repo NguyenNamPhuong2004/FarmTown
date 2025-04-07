@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Corn
   m_EditorClassIdentifier: 
   plantName: Corn
+  plantCost: 15
   seedlingTile: {fileID: 11400000, guid: 018ad0e55c1eea947a58061d3b74d764, type: 2}
   youngPlantTile: {fileID: 11400000, guid: 8aa4e2515dd312a42828353e9764410d, type: 2}
   maturePlantTile: {fileID: 11400000, guid: 620825c6e974c124d993576a1e2c9dab, type: 2}

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 1
   itemName: Wheat
-  itemSalePrice: 11
-  itemBuyPrice: 13
+  itemSalePrice: 12
+  itemBuyPrice: 10
   itemType: 1
   itemSprite: {fileID: 21300106, guid: 2700e06d970d112489ff23cfb58c3f78, type: 3}

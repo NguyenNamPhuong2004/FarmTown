@@ -41,13 +41,14 @@ public class AnimalManager : MonoBehaviour
             SpawnAnimal(animalData);
         }
     } 
-    public void SpawnAnimalAfterPlacement(Vector3 position, int animalTypeIndex)
+    public void SpawnAnimalAfterPlacement(Vector3 position, string animalTypeName)
     {
         int newId = DataPlayer.allData.animalDataList.Count;
+        AnimalTypeData animalType = animalTypes.Find(x => x.animalName == animalTypeName);
         AnimalData animalData = new AnimalData(
             newId,
             "",
-            animalTypes[animalTypeIndex],
+            animalType,
             AnimalState.Hungry,
             position
         );

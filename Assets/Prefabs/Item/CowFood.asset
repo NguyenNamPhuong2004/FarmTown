@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 8
   itemName: CowFood
-  itemSalePrice: 21
-  itemBuyPrice: 28
+  itemSalePrice: 20
+  itemBuyPrice: 0
   itemType: 0
   itemSprite: {fileID: -1111316801, guid: 030e8495ef0b85940bd6c3d29d9f741b, type: 3}

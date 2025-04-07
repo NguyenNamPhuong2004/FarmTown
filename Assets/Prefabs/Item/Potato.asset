@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 5
   itemName: Potato
-  itemSalePrice: 15
-  itemBuyPrice: 17
+  itemSalePrice: 30
+  itemBuyPrice: 20
   itemType: 1
   itemSprite: {fileID: 21300124, guid: 2700e06d970d112489ff23cfb58c3f78, type: 3}

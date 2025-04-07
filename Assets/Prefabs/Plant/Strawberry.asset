@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Strawberry
   m_EditorClassIdentifier: 
   plantName: Strawberry
+  plantCost: 17
   seedlingTile: {fileID: 11400000, guid: 018ad0e55c1eea947a58061d3b74d764, type: 2}
   youngPlantTile: {fileID: 11400000, guid: 66586e9deb95237489ca6f83a6454997, type: 2}
   maturePlantTile: {fileID: 11400000, guid: 02e715e4b7bc70c428683e13ec141eea, type: 2}

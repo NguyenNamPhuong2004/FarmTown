@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Carrot
   m_EditorClassIdentifier: 
   plantName: Carrot
+  plantCost: 25
   seedlingTile: {fileID: 11400000, guid: 018ad0e55c1eea947a58061d3b74d764, type: 2}
   youngPlantTile: {fileID: 11400000, guid: 66586e9deb95237489ca6f83a6454997, type: 2}
   maturePlantTile: {fileID: 11400000, guid: ec306f9aa91b58742b590b17fcdb0d81, type: 2}

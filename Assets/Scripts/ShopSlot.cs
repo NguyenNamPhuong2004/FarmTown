@@ -37,11 +37,11 @@ public class ShopSlot
         int totalCost = item.itemBuyPrice * quantity;
         if (DataPlayer.GetCoin() >= totalCost)
         {
-            DataPlayer.SubCoin(totalCost);
 
-            if (item.itemType == ItemType.Building || item.itemType == ItemType.Animal)
+            if (item.itemType == ItemType.Building || item.itemType == ItemType.Animal || item.itemName == "AppleTree")
             {
-                placementManager.StartPlacing(item);
+                placementManager.StartPlacing(item, item.itemBuyPrice);
+                GameUIManager.Ins.CloseShop();
                 Debug.Log($"Đã mua {quantity} {item.itemName}, hãy đặt nó vào vị trí mong muốn!");
             }
             else

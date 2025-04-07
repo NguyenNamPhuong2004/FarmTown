@@ -8,8 +8,7 @@ public class PlantingSystem : MonoBehaviour
 {
     public Tilemap soilTilemap;
     public Tilemap plantTilemap;
-    public TileBase soilTile;
-    public List<PlantData> plantTypes;  
+    public TileBase soilTile; 
 
     private Camera mainCamera;
     public PlantData selectedPlantType;
@@ -35,17 +34,18 @@ public class PlantingSystem : MonoBehaviour
         {
             Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
             Vector3Int gridPosition = soilTilemap.WorldToCell(mousePosition);
-            if (plantTilemap.GetTile(gridPosition) == null)
+            if (plantTilemap.GetTile(gridPosition) == null )
             {
                 if (soilTilemap.GetTile(gridPosition) == soilTile)
                 {
-                    if (selectedPlantType != null)
+                    if (selectedPlantType != null && selectedPlantType.plantCost <= DataPlayer.GetCoin())
                     {
                         plantTilemap.SetTile(gridPosition, selectedPlantType.seedlingTile);
                         StartTime = DateTime.Now;
                         EndTime = StartTime.AddSeconds((double)selectedPlantType.growthTime);
                         TileData tileData = new TileData(gridPosition.x, gridPosition.y, EndTime.ToString("yyyy-MM-ddTHH:mm:ss"), selectedPlantType);
                         DataPlayer.AddTileData(tileData);
+                        DataPlayer.SubCoin(selectedPlantType.plantCost);
                     }
                     else
                     {
