@@ -16,7 +16,11 @@ public class ProductionInfoUI : MonoBehaviour
             Debug.LogError("Please assign animalNameText and timeText in the Inspector for ProductionInfoUI!");
         }
     }
-
+    private void Start()
+    {
+        ProductionInfo.OnUpdateProductionUI += HandleUpdateProductionUI;
+        ProductionInfo.OnClearProductionUI += HandleClearProductionUI;
+    }
     private void OnEnable()
     {
         ProductionInfo.OnUpdateProductionUI += HandleUpdateProductionUI;
@@ -41,23 +45,27 @@ public class ProductionInfoUI : MonoBehaviour
 
     private void UpdateDisplay(string animalName, TimeSpan remainingTime)
     {
+        Debug.Log(remainingTime);
         if (animalNameText != null)
             animalNameText.text = animalName;
+        Debug.Log(1);
 
         if (timeText != null)
         {
-            timeText.text = string.Format("{0:00}:{1:00}:{2:00}:{3:00}",
-                remainingTime.Days,
-                remainingTime.Hours,
-                remainingTime.Minutes,
-                remainingTime.Seconds);
+            Debug.Log(2);
+            timeText.text = string.Format("{0:00}:{1:00}:{2:00}",
+                   remainingTime.Hours,
+                   remainingTime.Minutes,
+                   remainingTime.Seconds);
+            Debug.Log("1"+timeText.text);
         }
+        else Debug.Log(3);
     }
 
     private void ClearDisplay()
     {
         if (animalNameText != null) animalNameText.text = "";
-        if (timeText != null) timeText.text = "00:00:00:00";
+        if (timeText != null) timeText.text = "00:00:01";
     }
 
 

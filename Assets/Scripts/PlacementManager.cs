@@ -20,7 +20,7 @@ public class PlacementManager : MonoBehaviour
 
     private void Update()
     {
-        if (isPlacing && previewObject != null)
+        if (isPlacing && previewObject != null && DataPlayer.GetCoin() >= cost)
         {
             MovePreviewObject();
             UpdatePreviewColor();
@@ -28,7 +28,7 @@ public class PlacementManager : MonoBehaviour
             {
                 PlaceObject();
             }
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetKeyDown(KeyCode.Space))
             {
                 CancelPlacing();
             }

@@ -18,36 +18,7 @@ public class TreeManager : MonoBehaviour
         placementManager = FindObjectOfType<PlacementManager>();
         if (placementManager == null) Debug.LogError("PlacementManager not found!");
     }
-    private void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D[] hits = Physics2D.RaycastAll(mousePos, Vector2.zero); // Kiểm tra tất cả collider tại vị trí chuột
-            foreach (var hit in hits)
-            {
-                if (hit.collider != null)
-                {
-                    Debug.Log("Hit: " + hit.collider.gameObject.name);
-                    AppleTree tree = hit.collider.GetComponent<AppleTree>();
-                    if (tree != null)
-                    {
-                        int treeId = activeTrees.IndexOf(tree.gameObject);
-                        if (treeId >= 0)
-                        {
-                            Debug.Log("Tree ID: " + treeId);
-                            OnTreeClicked(treeId);
-                            break; // Chỉ xử lý cây đầu tiên được nhấp
-                        }
-                    }
-                }
-            }
-            if (hits.Length == 0)
-            {
-                Debug.Log("No collider hit at " + mousePos);
-            }
-        }
-    }
+   
     public void SpawnTreeAfterPlacement(Vector3 position)
     {
         int newId = activeTrees.Count;

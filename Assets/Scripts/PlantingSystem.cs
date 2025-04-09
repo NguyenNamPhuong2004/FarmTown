@@ -12,15 +12,10 @@ public class PlantingSystem : MonoBehaviour
 
     private Camera mainCamera;
     public PlantData selectedPlantType;
+    public GameObject plantTypes;
     public TileData selectedPlant;
-    public GameObject plantTypesUI;
     public Text plantNameUI;
     public Text plantGrowthTimeUI;
-
-    DateTime StartTime;
-    DateTime EndTime;
-    bool isTime;
-    TimeSpan timeleft;
 
     public InventorySystem inventory;
     void Start()
@@ -30,136 +25,137 @@ public class PlantingSystem : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-            Vector3Int gridPosition = soilTilemap.WorldToCell(mousePosition);
-            if (plantTilemap.GetTile(gridPosition) == null )
-            {
-                if (soilTilemap.GetTile(gridPosition) == soilTile)
-                {
-                    if (selectedPlantType != null && selectedPlantType.plantCost <= DataPlayer.GetCoin())
-                    {
-                        plantTilemap.SetTile(gridPosition, selectedPlantType.seedlingTile);
-                        StartTime = DateTime.Now;
-                        EndTime = StartTime.AddSeconds((double)selectedPlantType.growthTime);
-                        TileData tileData = new TileData(gridPosition.x, gridPosition.y, EndTime.ToString("yyyy-MM-ddTHH:mm:ss"), selectedPlantType);
-                        DataPlayer.AddTileData(tileData);
-                        DataPlayer.SubCoin(selectedPlantType.plantCost);
-                    }
-                    else
-                    {
-                        plantTypesUI.SetActive(true);
-                    }
-                }
-            }
-            else
-            {
-                TileData tileData = null;
-                // Kiểm tra xem có tìm thấy dữ liệu tile không
-                if (DataPlayer.IsContain(gridPosition.x, gridPosition.y))
-                {
-                    tileData = DataPlayer.GetTileDataFromList(gridPosition.x, gridPosition.y);
-                }
-
-                if (tileData != null)
-                {
-                    if (plantTilemap.GetTile(gridPosition) == tileData.plantData.maturePlantTile)
-                    {
-                        // Xóa tile trước
-                        plantTilemap.SetTile(gridPosition, null);
-
-                        try
-                        {
-                            // Thêm vào inventory - đây là nơi có thể phát sinh lỗi
-                            inventory.AddItem(tileData.plantData.plantName, 1);
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.LogError("Lỗi khi thêm vào inventory: " + e.Message);
-                        }
-
-                        // Kiểm tra xem đây có phải là selectedPlant không
-                        if (selectedPlant != null && selectedPlant.x == gridPosition.x && selectedPlant.y == gridPosition.y)
-                        {
-                            selectedPlant = null;
-                            plantNameUI.text = "";
-                            plantGrowthTimeUI.text = "00:00:00";
-                        }
-
-                        // Cuối cùng là xóa khỏi danh sách
-                        DataPlayer.RemoveTileData(tileData);
-                    }
-                    else
-                    {
-                        plantNameUI.text = tileData.plantData.plantName;
-                        selectedPlant = tileData;
-                    }
-                }
-            }
-        }
-
-        if (selectedPlant != null)
-        {
-            try
-            {
-                DateTime start = DateTime.Now;
-                EndTime = DateTime.ParseExact(selectedPlant.endTime, "yyyy-MM-ddTHH:mm:ss", null);
-                timeleft = EndTime - start;
-                int second = Mathf.FloorToInt((float)(timeleft.TotalSeconds)) % 60;
-                int minute = Mathf.FloorToInt((float)(timeleft.TotalMinutes)) % 60;
-                int hour = Mathf.FloorToInt((float)(timeleft.TotalHours));
-
-                if (timeleft.TotalSeconds <= 0)
-                    plantGrowthTimeUI.text = string.Format("{0:00}:{1:00}:{2:00}", 0, 0, 0);
-                else
-                    plantGrowthTimeUI.text = string.Format("{0:00}:{1:00}:{2:00}", hour, minute, second);
-            }
-            catch (Exception)
-            {
-                selectedPlant = null;
-                plantGrowthTimeUI.text = "00:00:00";
-            }
-        }
-        else
-        {
-            plantGrowthTimeUI.text = "00:00:00";
-        }
+        HandleMouseInput();
+        UpdateSelectedPlantUI();
     }
 
     private void FixedUpdate()
     {
-        List<TileData> tileList = DataPlayer.GetTileDataList();
-        if (tileList == null || tileList.Count == 0) return;
+        UpdateAllTrees();
+    }
 
-        for (int i = 0; i < tileList.Count; i++)
+    private void HandleMouseInput()
+    {
+        if (Input.GetMouseButtonDown(0))
         {
-            TileData tile = tileList[i];
-            if (tile == null) continue;
+            Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            Vector3Int gridPosition = soilTilemap.WorldToCell(mousePosition);
 
-            try
+            if (soilTilemap.GetTile(gridPosition) == soilTile)
             {
-                DateTime start = DateTime.Now;
-                DateTime endTime = DateTime.ParseExact(tile.endTime, "yyyy-MM-ddTHH:mm:ss", null);
-                TimeSpan timeLeft = endTime - start;
-                Vector3Int tilePosition = new Vector3Int(tile.x, tile.y, 0);
-
-                if (timeLeft.TotalSeconds < 0)
+                if (plantTilemap.GetTile(gridPosition) == null)
                 {
-                    plantTilemap.SetTile(tilePosition, tile.plantData.maturePlantTile);
-                }
-                else if (timeLeft.TotalSeconds < tile.plantData.growthTime / 2)
-                {
-                    plantTilemap.SetTile(tilePosition, tile.plantData.youngPlantTile);
+                    if (selectedPlantType != null && selectedPlantType.plantCost <= DataPlayer.GetCoin())
+                    {
+                        PlantTree(gridPosition);
+                    }
+                    else
+                    {
+                        GameUIManager.Ins.OpenPlantType();
+                    }
                 }
                 else
                 {
-                    plantTilemap.SetTile(tilePosition, tile.plantData.seedlingTile);
+                    HandleTreeInteraction(gridPosition);
                 }
             }
-            catch (Exception e)
+            //else
+            //{
+            //    selectedPlant = null;
+            //}
+        }
+    }
+
+    private void PlantTree(Vector3Int gridPosition)
+    {
+        plantTilemap.SetTile(gridPosition, selectedPlantType.seedlingTile);
+        DateTime endTime = DateTime.Now.AddSeconds(selectedPlantType.growthTime);
+        string endTimeString = endTime.ToString("yyyy-MM-ddTHH:mm:ss"); // Chuyển thành chuỗi
+        TileData tileData = new TileData(gridPosition.x, gridPosition.y, endTimeString, selectedPlantType);
+        DataPlayer.AddTileData(tileData);
+        DataPlayer.SubCoin(selectedPlantType.plantCost);
+    }
+
+    private void HandleTreeInteraction(Vector3Int gridPosition)
+    {
+        TileData tileData = DataPlayer.GetTileDataFromList(gridPosition.x, gridPosition.y);
+        if (tileData != null)
+        {
+            DateTime endTime = tileData.GetEndTime();
+            TimeSpan timeLeft = endTime - DateTime.Now;
+            if (timeLeft.TotalSeconds <= 0 && plantTilemap.GetTile(gridPosition) == tileData.plantData.maturePlantTile)
             {
-                Debug.LogError("Lỗi khi cập nhật cây: " + e.Message);
+                HarvestTree(gridPosition, tileData);
+            }
+            else
+            {
+                SelectTree(tileData);
+            }
+        }
+    }
+
+    private void HarvestTree(Vector3Int gridPosition, TileData tileData)
+    {
+        plantTilemap.SetTile(gridPosition, null);
+        inventory.AddItem(tileData.plantData.plantName, 1);
+        if (selectedPlant == tileData)
+        {
+            selectedPlant = null;
+            plantNameUI.text = "";
+            plantGrowthTimeUI.text = "00:00:00";
+        }
+        DataPlayer.RemoveTileData(tileData);
+    }
+
+    private void SelectTree(TileData tileData)
+    {
+        selectedPlant = tileData;
+        plantNameUI.text = tileData.plantData.plantName;
+    }
+
+    private void UpdateSelectedPlantUI()
+    {
+        if (selectedPlant != null)
+        {
+            DateTime endTime = selectedPlant.GetEndTime();
+            TimeSpan timeLeft = endTime - DateTime.Now;
+            if (timeLeft.TotalSeconds <= 0)
+            {
+                plantGrowthTimeUI.text = "00:00:00";
+            }
+            else
+            {
+                int hours = (int)timeLeft.TotalHours;
+                int minutes = timeLeft.Minutes;
+                int seconds = timeLeft.Seconds;
+                plantGrowthTimeUI.text = string.Format("{0:00}:{1:00}:{2:00}", hours, minutes, seconds);
+            }
+        }
+    }
+
+    private void UpdateAllTrees()
+    {
+        List<TileData> tileList = DataPlayer.GetTileDataList();
+        if (tileList == null || tileList.Count == 0) return;
+
+        DateTime now = DateTime.Now;
+        foreach (TileData tile in tileList)
+        {
+            Vector3Int tilePosition = new Vector3Int(tile.x, tile.y, 0);
+            DateTime endTime = tile.GetEndTime();
+            TimeSpan timeLeft = endTime - now;
+
+            if (timeLeft.TotalSeconds <= 0)
+            {
+                plantTilemap.SetTile(tilePosition, tile.plantData.maturePlantTile);
+            }
+            else if (timeLeft.TotalSeconds < tile.plantData.growthTime / 2)
+            {
+                plantTilemap.SetTile(tilePosition, tile.plantData.youngPlantTile);
+            }
+            else
+            {
+                plantTilemap.SetTile(tilePosition, tile.plantData.seedlingTile);
             }
         }
     }
@@ -168,62 +164,5 @@ public class PlantingSystem : MonoBehaviour
     {
         selectedPlantType = plant;
     }
-
-    /*  private void Awake()
-      {
-          EndTime = DataPlayer.GetEndtime();
-          DateTime start = DateTime.Now;
-          timeleft = EndTime - start;
-          if (DataPlayer.GetisTime() == true)
-          {
-              //TimeDaily.SetActive(true);
-             // DailyoffBtn.SetActive(true);
-              int second = Mathf.FloorToInt((float)(timeleft.TotalSeconds)) % 60;
-              int minute = Mathf.FloorToInt((float)(timeleft.TotalMinutes)) % 60;
-              int hour = Mathf.FloorToInt((float)(timeleft.TotalHours));
-             // TimeDaily.GetComponent<Text>().text = string.Format("Return back: {0:00}:{1:00}:{2:00}", hour, minute, second);
-          }
-          else
-          {
-             // TimeDaily.SetActive(false);
-             // DailyoffBtn.SetActive(false);
-             // DataPlayer.SetCanDaily(true);
-          }
-      }
-      private void FixedUpdate()
-      {
-          if (DataPlayer.GetisTime() == true)
-          {
-              DateTime start = DateTime.Now;
-              EndTime = DataPlayer.GetEndtime();
-              timeleft = EndTime - start;
-              if (timeleft.TotalSeconds < 0)
-              {
-                //  TimeDaily.SetActive(false);
-                 // DailyoffBtn.SetActive(false);
-                  DataPlayer.SetisTime(isTime);
-                //  DataPlayer.SetCanDaily(true);
-              }
-              else
-              {
-                  int second = Mathf.FloorToInt((float)(timeleft.TotalSeconds)) % 60;
-                  int minute = Mathf.FloorToInt((float)(timeleft.TotalMinutes)) % 60;
-                  int hour = Mathf.FloorToInt((float)(timeleft.TotalHours));
-                 // TimeDaily.GetComponent<Text>().text = string.Format("Return back : {0:00}:{1:00}:{2:00}", hour, minute, second);
-
-              }
-          }
-      }
-
-      private void HandleTime()
-      {
-          StartTime = DateTime.Now;
-          EndTime = StartTime.AddHours(24);
-          DataPlayer.SetEndtime(EndTime);
-          DataPlayer.SetisTime(isTime);
-         // TimeDaily.SetActive(true);
-         // DailyoffBtn.SetActive(true);
-         // DataPlayer.SetCanDaily(false);
-      }*/
 }
 

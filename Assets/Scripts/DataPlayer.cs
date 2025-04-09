@@ -25,7 +25,10 @@ public class DataPlayer
                 inventoryMax = 50,
                 totalItemQuantity = 0,
                 music = 0.5f,
-                sound = 0.5f
+                sound = 0.5f,
+                skipCountToday = 0,
+                lastResetDate = DateTime.Now.ToString("yyyy-MM-dd"),
+                currentOrder = null
             };
             SaveData();
         }
@@ -147,6 +150,38 @@ public class DataPlayer
         allData.UpdateAnimalData(id, state, endTime, position);
         SaveData();
     }
+    public static void SetCurrentOrder(DeliveryOrder order)
+    {
+        allData.SetCurrentOrder(order);
+        SaveData();
+    }
+
+    public static DeliveryOrder GetCurrentOrder()
+    {
+        return allData.GetCurrentOrder();
+    }
+
+    public static void SetSkipCountToday(int count)
+    {
+        allData.SetSkipCountToday(count);
+        SaveData();
+    }
+
+    public static int GetSkipCountToday()
+    {
+        return allData.GetSkipCountToday();
+    }
+
+    public static void SetLastResetDate(string date)
+    {
+        allData.SetLastResetDate(date);
+        SaveData();
+    }
+
+    public static string GetLastResetDate()
+    {
+        return allData.GetLastResetDate();
+    }
     public static void AddListenerUpdateCoinEvent(Action updateCoin)
     {
         UpdateCoinEvent += updateCoin;
@@ -183,6 +218,9 @@ public class AllData
     public int totalItemQuantity;
     public float music;
     public float sound;
+    public DeliveryOrder currentOrder; 
+    public int skipCountToday;         
+    public string lastResetDate;
     public List<TileData> GetTileDataList()
     {
         return tileDataList;
@@ -332,6 +370,35 @@ public class AllData
             animalData.position = position;
         }
     }
+    public void SetCurrentOrder(DeliveryOrder order)
+    {
+        currentOrder = order;      
+    }
+
+    public DeliveryOrder GetCurrentOrder()
+    {
+        return currentOrder;
+    }
+
+    public void SetSkipCountToday(int count)
+    {
+        skipCountToday = count;      
+    }
+
+    public int GetSkipCountToday()
+    {
+        return skipCountToday;
+    }
+
+    public void SetLastResetDate(string date)
+    {
+        lastResetDate = date;     
+    }
+
+    public string GetLastResetDate()
+    {
+        return lastResetDate;
+    }
 }
 [Serializable]
 public class TileData
@@ -346,6 +413,10 @@ public class TileData
         this.y = y;
         this.endTime = endTime;
         this.plantData = selectedPlant;
+    }
+    public DateTime GetEndTime()
+    {
+        return DateTime.ParseExact(endTime, "yyyy-MM-ddTHH:mm:ss", null);
     }
 }
 [Serializable]

@@ -34,8 +34,13 @@ public class ShopSlot
             return false;
         }
 
-        int totalCost = item.itemBuyPrice * quantity;
-        if (DataPlayer.GetCoin() >= totalCost)
+        if (item.itemType == ItemType.Product)
+        {
+            GameUIManager.Ins.OpenPlantType();
+            GameUIManager.Ins.CloseShop();
+            return false;
+        }
+        if (DataPlayer.GetCoin() >= item.itemBuyPrice)
         {
 
             if (item.itemType == ItemType.Building || item.itemType == ItemType.Animal || item.itemName == "AppleTree")
@@ -44,14 +49,7 @@ public class ShopSlot
                 GameUIManager.Ins.CloseShop();
                 Debug.Log($"Đã mua {quantity} {item.itemName}, hãy đặt nó vào vị trí mong muốn!");
             }
-            else
-            {
-                if (!DataPlayer.IsInventoryMax())
-                {
-                    DataPlayer.AddItemQuantity(itemId, quantity);
-                    Debug.Log($"Đã thêm {quantity} {item.itemName} vào inventory của người chơi");
-                }
-            }
+           
             return true;
         }
         Debug.Log("Không đủ tiền!");

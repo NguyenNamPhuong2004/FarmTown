@@ -37,6 +37,7 @@ public class ProductionInfo : MonoBehaviour
             if (animal != null && animal.State == AnimalState.Full)
             {
                 UpdateProductionInfo(animal.AnimalTypeData.animalName, animal.GetRemainingTime());
+                Debug.Log(animal.GetRemainingTime());
             }
             else
             {

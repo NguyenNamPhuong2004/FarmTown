@@ -26,6 +26,19 @@ public class AppleTree : MonoBehaviour
                 spriteRenderer.sprite = spriteWithFruit;
             }
         }
+        if (Input.GetMouseButtonDown(0))
+        {
+            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Collider2D hit = Physics2D.OverlapPoint(mousePos);
+            if (hit != null && hit.gameObject == gameObject) 
+            {
+                int treeId = TreeManager.Instance.activeTrees.IndexOf(gameObject);
+                if (treeId >= 0)
+                {
+                    TreeManager.Instance.OnTreeClicked(treeId);
+                }
+            }
+        }
     }
 
     public void Initialize(TreeData data)

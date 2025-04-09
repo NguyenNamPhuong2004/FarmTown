@@ -12,6 +12,7 @@ public class GameUIManager : Singleton<GameUIManager>
     public GameObject Grinder;
     public GameObject ListGrinderRecipe;
     public GameObject GrinderRecipe;
+    public GameObject PlantType;
     public GameObject Ads;
     public GameObject Level;
     protected override void Awake()
@@ -65,6 +66,8 @@ public class GameUIManager : Singleton<GameUIManager>
     }
     public void CloseGrinder()
     {
+        GrinderRecipe.SetActive(false);
+        ListGrinderRecipe.SetActive(false);
         Grinder.SetActive(false);
         SoundManager.Ins.ButtonSound();
     }
@@ -86,6 +89,16 @@ public class GameUIManager : Singleton<GameUIManager>
     public void CloseGrinderRecipe()
     {
         GrinderRecipe.SetActive(false);
+        SoundManager.Ins.ButtonSound();
+    } 
+    public void OpenPlantType()
+    {
+        PlantType.SetActive(true);
+      //  SoundManager.Ins.ButtonSound();
+    } 
+    public void ClosePlantType()
+    {
+        PlantType.SetActive(false);
         SoundManager.Ins.ButtonSound();
     }
     public void OpenAds()
