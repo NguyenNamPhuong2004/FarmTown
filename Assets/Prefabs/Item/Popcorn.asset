@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f45a1432e80159e4887aad3a2b3916e4, type: 3}
   m_Name: Popcorn
   m_EditorClassIdentifier: 
-  id: 1
-  itemName: Wheat
+  id: 8
+  itemName: Popcorn
   itemSalePrice: 11
-  itemBuyPrice: 13
-  itemType: 1
-  itemSprite: {fileID: 21300106, guid: 2700e06d970d112489ff23cfb58c3f78, type: 3}
+  itemBuyPrice: 0
+  itemType: 6
+  itemSprite: {fileID: 21300000, guid: 20dd58178e15a03479518ab8a8c3b95a, type: 3}

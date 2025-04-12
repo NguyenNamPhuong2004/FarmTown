@@ -10,7 +10,7 @@ public class DeliverySystem : MonoBehaviour
     [SerializeField] private List<Item> availableItems;
     private DeliveryOrder currentOrder;
     public InventorySystem inventorySystem;
-
+    private int deliveredCount = 0;
     private const int MAX_SKIPS_PER_DAY = 3;
 
     public UnityEvent OnOrderUpdated;
@@ -55,8 +55,15 @@ public class DeliverySystem : MonoBehaviour
         }
 
         DataPlayer.AddCoin(currentOrder.totalPrice);
+        deliveredCount++;
+        MissionSystem.Instance.TrackProgress("Đơn hàng", 1, MissionType.Deliver);
         Debug.Log($"Giao hàng thành công! Nhận được {currentOrder.totalPrice} coin.");
         GenerateNewOrder();
+    }
+
+    public int GetDeliveredCount()
+    {
+        return deliveredCount;
     }
 
     public void SkipOrder()

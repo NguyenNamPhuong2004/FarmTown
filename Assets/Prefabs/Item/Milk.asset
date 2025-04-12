@@ -15,6 +15,6 @@ MonoBehaviour:
   id: 14
   itemName: Milk
   itemSalePrice: 16
-  itemBuyPrice: 18
-  itemType: 1
+  itemBuyPrice: 0
+  itemType: 5
   itemSprite: {fileID: 21300226, guid: 2700e06d970d112489ff23cfb58c3f78, type: 3}

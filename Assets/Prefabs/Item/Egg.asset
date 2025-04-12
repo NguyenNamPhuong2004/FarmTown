@@ -15,6 +15,6 @@ MonoBehaviour:
   id: 13
   itemName: Egg
   itemSalePrice: 14
-  itemBuyPrice: 16
-  itemType: 1
+  itemBuyPrice: 0
+  itemType: 5
   itemSprite: {fileID: 21300254, guid: 2700e06d970d112489ff23cfb58c3f78, type: 3}

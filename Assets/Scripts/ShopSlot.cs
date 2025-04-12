@@ -34,7 +34,7 @@ public class ShopSlot
             return false;
         }
 
-        if (item.itemType == ItemType.Product)
+        if (item.itemType == ItemType.Plant)
         {
             GameUIManager.Ins.OpenPlantType();
             GameUIManager.Ins.CloseShop();

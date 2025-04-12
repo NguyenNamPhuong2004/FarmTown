@@ -2,8 +2,10 @@
 public enum ItemType
 {
     None,
-    Product, 
+    Plant, 
     Animal, 
     Building,
-    Other
+    Tree,
+    Product,
+    Food
 }

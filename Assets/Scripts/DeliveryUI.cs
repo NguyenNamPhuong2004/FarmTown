@@ -35,19 +35,20 @@ public class DeliveryUI : MonoBehaviour
         List<int> currentAmounts = deliverySystem.GetCurrentAmounts();
         List<int> requiredAmounts = deliverySystem.GetRequiredAmounts();
 
+        Debug.Log(sprites.Count);
         for (int i = 0; i < sprites.Count; i++)
         {
             GameObject itemUI = Instantiate(itemUIPrefab, itemContainer);
             itemUIObjects.Add(itemUI);
 
-            Image spriteImage = itemUI.transform.Find("Sprite").GetComponent<Image>();
-            Text amountText = itemUI.transform.Find("Amount").GetComponent<Text>();
+            Image spriteImage = itemUI.GetComponent<Image>();
+            Text amountText = itemUI.GetComponentInChildren<Text>();
 
             spriteImage.sprite = sprites[i];
             amountText.text = $"{currentAmounts[i]}/{requiredAmounts[i]}";
         }
 
-        totalPriceText.text = $"Giá: {deliverySystem.GetTotalPrice()} coin";
+        totalPriceText.text = $"{deliverySystem.GetTotalPrice()}";
         skipCountText.text = $"Number of skips remaining: {deliverySystem.GetSkipCountRemaining()}";
         deliverButton.interactable = deliverySystem.IsOrderDeliverable();
         skipButton.interactable = deliverySystem.CanSkipOrder();

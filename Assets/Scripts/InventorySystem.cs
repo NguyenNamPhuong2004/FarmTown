@@ -8,7 +8,8 @@ public class InventorySystem : MonoBehaviour
     private InventorySlot itemSlotSelected;
 
     public event Action OnInventoryUpdated; 
-    public event Action<InventorySlot> OnItemSelected; 
+    public event Action<InventorySlot> OnItemSelected;
+    private Dictionary<string, int> harvestedItems = new Dictionary<string, int>();
 
     private void Awake()
     {
@@ -54,6 +55,10 @@ public class InventorySystem : MonoBehaviour
                 slot.AddItem(quantityAdd);
                 itemFound = true;
                 OnInventoryUpdated?.Invoke();
+
+                if (!harvestedItems.ContainsKey(itemName))
+                    harvestedItems[itemName] = 0;
+                harvestedItems[itemName] += quantityAdd;
                 break;
             }
         }
@@ -63,7 +68,10 @@ public class InventorySystem : MonoBehaviour
             Debug.LogError("Could not add item to inventory: No slot found with item named '" + itemName + "'");
         }
     }
-
+    public int GetHarvestedCount(string itemName)
+    {
+        return harvestedItems.ContainsKey(itemName) ? harvestedItems[itemName] : 0;
+    }
     public void SubItem(string itemName, int quantitySub)
     {
         foreach (InventorySlot slot in slots)

@@ -74,6 +74,7 @@ public class PlantingSystem : MonoBehaviour
         TileData tileData = new TileData(gridPosition.x, gridPosition.y, endTimeString, selectedPlantType);
         DataPlayer.AddTileData(tileData);
         DataPlayer.SubCoin(selectedPlantType.plantCost);
+        MissionSystem.Instance.TrackProgress(selectedPlantType.plantName, 1, MissionType.Plant);
     }
 
     private void HandleTreeInteraction(Vector3Int gridPosition)
@@ -98,6 +99,7 @@ public class PlantingSystem : MonoBehaviour
     {
         plantTilemap.SetTile(gridPosition, null);
         inventory.AddItem(tileData.plantData.plantName, 1);
+        MissionSystem.Instance.TrackProgress(tileData.plantData.plantName, 1, MissionType.Harvest);
         if (selectedPlant == tileData)
         {
             selectedPlant = null;
@@ -163,6 +165,20 @@ public class PlantingSystem : MonoBehaviour
     public void SelectPlant(PlantData plant)
     {
         selectedPlantType = plant;
+    }
+    public int CountPlantedTrees(string plantName)
+    {
+        int count = 0;
+        List<TileData> tileList = DataPlayer.GetTileDataList();
+        if (tileList != null)
+        {
+            foreach (TileData tile in tileList)
+            {
+                if (tile.plantData.plantName == plantName)
+                    count++;
+            }
+        }
+        return count;
     }
 }
 

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 12
   itemName: Apple
-  itemSalePrice: 15
-  itemBuyPrice: 17
+  itemSalePrice: 20
+  itemBuyPrice: 0
   itemType: 1
   itemSprite: {fileID: 21300126, guid: 2700e06d970d112489ff23cfb58c3f78, type: 3}

@@ -28,8 +28,12 @@ public class DataPlayer
                 sound = 0.5f,
                 skipCountToday = 0,
                 lastResetDate = DateTime.Now.ToString("yyyy-MM-dd"),
-                currentOrder = null
-            };
+                currentOrder = null,
+                missions = new List<MissionData>(),
+                missionProgress = new List<int> { 0, 0, 0 },
+                nextResetTime = DateTime.Now.AddHours(12).ToString("yyyy-MM-ddTHH:mm:ss"),
+                isBigRewardClaimed = false
+        };
             SaveData();
         }
     }
@@ -135,9 +139,9 @@ public class DataPlayer
         SaveData();
     }
 
-    public static void RemoveAnimalData(AnimalData animalData)
+    public static void RemoveAnimalData(int id)
     {
-        allData.RemoveAnimalData(animalData);
+        allData.RemoveAnimalData(id);
         SaveData();
     }
 
@@ -182,6 +186,49 @@ public class DataPlayer
     {
         return allData.GetLastResetDate();
     }
+    public static List<MissionData> GetMissions()
+    {
+        return allData.GetMissions();
+    }
+
+    public static void SetMissions(List<MissionData> missions)
+    {
+        allData.SetMissions(missions);
+        SaveData();
+    }
+
+    public static List<int> GetMissionProgress()
+    {
+        return allData.GetMissionProgress();
+    }
+
+    public static void SetMissionProgress(List<int> progress)
+    {
+        allData.SetMissionProgress(progress);
+        SaveData();
+    }
+
+    public static string GetNextResetTime()
+    {
+        return allData.GetNextResetTime();
+    }
+
+    public static void SetNextResetTime(string time)
+    {
+        allData.SetNextResetTime(time);
+        SaveData();
+    }
+
+    public static bool GetIsBigRewardClaimed()
+    {
+        return allData.GetIsBigRewardClaimed();
+    }
+
+    public static void SetIsBigRewardClaimed(bool claimed)
+    {
+        allData.SetIsBigRewardClaimed(claimed);
+        SaveData();
+    }
     public static void AddListenerUpdateCoinEvent(Action updateCoin)
     {
         UpdateCoinEvent += updateCoin;
@@ -221,6 +268,10 @@ public class AllData
     public DeliveryOrder currentOrder; 
     public int skipCountToday;         
     public string lastResetDate;
+    public List<MissionData> missions;
+    public List<int> missionProgress;
+    public string nextResetTime;
+    public bool isBigRewardClaimed;
     public List<TileData> GetTileDataList()
     {
         return tileDataList;
@@ -344,9 +395,9 @@ public class AllData
         animalDataList.Add(animalData);
     }
     
-    public void RemoveAnimalData(AnimalData animalData) 
-    {  
-        animalDataList.Remove(animalData);
+    public void RemoveAnimalData( int id) 
+    {
+        animalDataList.Remove(animalDataList[id]);
     }
     
     public AnimalData GetAnimalData(int id)
@@ -398,6 +449,47 @@ public class AllData
     public string GetLastResetDate()
     {
         return lastResetDate;
+    }
+    public List<MissionData> GetMissions()
+    {
+        return missions;
+    }
+
+    public void SetMissions(List<MissionData> newMissions)
+    {
+        missions = newMissions;
+        
+    }
+
+    public List<int> GetMissionProgress()
+    {
+        return missionProgress;
+    }
+
+    public void SetMissionProgress(List<int> progress)
+    {
+        missionProgress = progress;
+       
+    }
+
+    public string GetNextResetTime()
+    {
+        return nextResetTime;
+    }
+
+    public void SetNextResetTime(string time)
+    {
+        nextResetTime = time;  
+    }
+
+    public bool GetIsBigRewardClaimed()
+    {
+        return isBigRewardClaimed;
+    }
+
+    public void SetIsBigRewardClaimed(bool claimed)
+    {
+        isBigRewardClaimed = claimed;
     }
 }
 [Serializable]

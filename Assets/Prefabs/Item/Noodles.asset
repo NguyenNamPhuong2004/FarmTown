@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f45a1432e80159e4887aad3a2b3916e4, type: 3}
   m_Name: Noodles
   m_EditorClassIdentifier: 
-  id: 1
-  itemName: Wheat
-  itemSalePrice: 11
-  itemBuyPrice: 13
-  itemType: 1
-  itemSprite: {fileID: 21300106, guid: 2700e06d970d112489ff23cfb58c3f78, type: 3}
+  id: 9
+  itemName: Noodles
+  itemSalePrice: 82
+  itemBuyPrice: 0
+  itemType: 6
+  itemSprite: {fileID: 21300000, guid: c5a92c9469386264b9b57815eb2bf83d, type: 3}

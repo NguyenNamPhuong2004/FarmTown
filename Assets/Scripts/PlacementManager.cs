@@ -63,7 +63,7 @@ public class PlacementManager : MonoBehaviour
         {
             DataPlayer.SetInventoryMax();
         }
-        else if (currentItem.itemType == ItemType.Other)
+        else if (currentItem.itemType == ItemType.Tree)
         {
             treeManager.SpawnTreeAfterPlacement(position);
         }

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Flour
   m_EditorClassIdentifier: 
   id: 1
-  itemName: Wheat
-  itemSalePrice: 11
-  itemBuyPrice: 13
-  itemType: 1
-  itemSprite: {fileID: 21300106, guid: 2700e06d970d112489ff23cfb58c3f78, type: 3}
+  itemName: Flour
+  itemSalePrice: 25
+  itemBuyPrice: 0
+  itemType: 6
+  itemSprite: {fileID: 21300000, guid: e90785a32d6a32245b29d412f6cb3705, type: 3}

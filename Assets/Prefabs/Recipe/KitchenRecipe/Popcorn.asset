@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7421d799a927f864dbb9117d7ce32589, type: 3}
   m_Name: Popcorn
   m_EditorClassIdentifier: 
-  recipeName: TomatoSoup
-  resultItem: {fileID: 11400000, guid: 160ad98d797977845bb4af73e51e83cf, type: 2}
+  recipeName: Popcorn
+  resultItem: {fileID: 11400000, guid: 6557b934d2a2f3b4293b21f73e696a68, type: 2}
   resultAmount: 1
   ingredients:
-  - item: {fileID: 11400000, guid: 84f221804075c1c488e7e30f9dfe23b9, type: 2}
-    quantity: 2
-  - item: {fileID: 11400000, guid: ddbc509c91f8f4b4698455bc4e7f423c, type: 2}
-    quantity: 2
+  - item: {fileID: 11400000, guid: 8c225ae83b162a04997bcad678d706b0, type: 2}
+    quantity: 3
+  - item: {fileID: 11400000, guid: 8c225ae83b162a04997bcad678d706b0, type: 2}
+    quantity: 3
   craftingTime: 300

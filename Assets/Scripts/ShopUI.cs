@@ -19,11 +19,11 @@ public class ShopUI : MonoBehaviour
             shopTypeButtons[i].onClick.AddListener(() => DisplayShopUI(type));
         }
 
-        DisplayShopUI(ItemType.Product);
+        DisplayShopUI(ItemType.Plant);
     }
     private void OnEnable()
     {
-        DisplayShopUI(ItemType.Product);
+        DisplayShopUI(ItemType.Plant);
     }
     private void DisplayShopUI(ItemType shopType)
     {

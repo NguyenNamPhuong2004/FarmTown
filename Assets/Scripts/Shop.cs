@@ -14,15 +14,15 @@ public class Shop : MonoBehaviour
     {
         placementManager = FindObjectOfType<PlacementManager>();
         InitializeShopSlots();
-        OnShopUpdated?.Invoke(ItemType.Product);
+        OnShopUpdated?.Invoke(ItemType.Plant);
     }
 
     void InitializeShopSlots()
     {
-        shopSlots[ItemType.Product] = new ShopSlot(ItemType.Product, allItems);
+        shopSlots[ItemType.Plant] = new ShopSlot(ItemType.Plant, allItems);
         shopSlots[ItemType.Animal] = new ShopSlot(ItemType.Animal, allItems);
         shopSlots[ItemType.Building] = new ShopSlot(ItemType.Building, allItems);
-        shopSlots[ItemType.Other] = new ShopSlot(ItemType.Other, allItems);
+        shopSlots[ItemType.Tree] = new ShopSlot(ItemType.Tree, allItems);
     }
 
     public bool BuyFromShop(ItemType shopType, int itemId, int quantity = 1)

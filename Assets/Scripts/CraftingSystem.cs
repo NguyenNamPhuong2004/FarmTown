@@ -8,6 +8,7 @@ public class CraftingSystem : MonoBehaviour
     [SerializeField] private InventorySystem playerInventory;
     [SerializeField] private List<Recipe> recipes;
     public event Action OnWaitingSlotsUpdated;
+    private Dictionary<string, int> craftedItems = new Dictionary<string, int>();
 
     public int waitingSlotUICount = 3;
     private void Awake() => Instance = this;
@@ -38,6 +39,17 @@ public class CraftingSystem : MonoBehaviour
 
         DataPlayer.AddWaitingSlot(new WaitingSlot(recipe));
         OnWaitingSlotsUpdated?.Invoke();
+
+        string productName = recipe.resultItem.itemName;
+        if (!craftedItems.ContainsKey(productName))
+            craftedItems[productName] = 0;
+        craftedItems[productName]++;
+        MissionSystem.Instance.TrackProgress(productName, 1, MissionType.Cook);
+    }
+
+    public int GetCookedCount(string itemName)
+    {
+        return craftedItems.ContainsKey(itemName) ? craftedItems[itemName] : 0;
     }
 
     public void CollectItem(WaitingSlot slot)

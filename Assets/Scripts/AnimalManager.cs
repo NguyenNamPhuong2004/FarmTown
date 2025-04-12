@@ -9,6 +9,7 @@ public class AnimalManager : MonoBehaviour
     public List<AnimalTypeData> animalTypes;
     public GameObject animalPrefab;
     public Transform animalParent;
+    private Dictionary<string, int> fedCounts = new Dictionary<string, int>();
 
     public List<GameObject> activeAnimals = new List<GameObject>(); 
     private ProductionInfo productionInfo;
@@ -53,7 +54,7 @@ public class AnimalManager : MonoBehaviour
             position
         );
 
-        DataPlayer.allData.AddAnimalData(animalData);
+        DataPlayer.AddAnimalData(animalData);
         SpawnAnimal(animalData);
     }
 
@@ -105,13 +106,22 @@ public class AnimalManager : MonoBehaviour
             inventorySystem.SubItem(foodName, 1); 
             animal.Feed();
             DataPlayer.UpdateAnimalData(animal.Id, animal.State, animal.EndTimeString, animal.transform.position);
+
+            string animalName = animal.AnimalTypeData.animalName;
+            if (!fedCounts.ContainsKey(animalName))
+                fedCounts[animalName] = 0;
+            fedCounts[animalName]++;
+            MissionSystem.Instance.TrackProgress(animalName, 1, MissionType.FeedAnimal);
         }
         else
         {
             Debug.Log("You need " + foodName);
         }
     }
-
+    public int GetFedCount(string animalName)
+    {
+        return fedCounts.ContainsKey(animalName) ? fedCounts[animalName] : 0;
+    }
     private void ShowProductionProgress(Animal animal)
     {
         if (productionInfo != null)
@@ -126,6 +136,7 @@ public class AnimalManager : MonoBehaviour
         inventorySystem.AddItem(productName, 1); 
         animal.ResetToHungry();
         DataPlayer.UpdateAnimalData(animal.Id, animal.State, animal.EndTimeString, animal.transform.position);
+        MissionSystem.Instance.TrackProgress(productName, 1, MissionType.Collect);
     }
 
     private void SellAnimal(int animalId)
@@ -137,7 +148,7 @@ public class AnimalManager : MonoBehaviour
         Destroy(animalObj);
 
         activeAnimals.RemoveAt(animalId);
-        DataPlayer.allData.animalDataList.RemoveAt(animalId);
+        DataPlayer.RemoveAnimalData(animalId);
 
         for (int i = 0; i < activeAnimals.Count; i++)
         {
