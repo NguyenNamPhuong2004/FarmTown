@@ -4,18 +4,13 @@ using UnityEngine;
 public class SoundManager : Singleton<SoundManager>
 {
     public AudioSource AufxClick;
-    public AudioSource AufxRain;
     public AudioSource AufxBackground;
-    public AudioClip rain;
-    public AudioClip arrowRain;
     public AudioClip buttonClip;
     public AudioClip music;
-    public AudioClip buyOrUpgrade;
-    public AudioClip victory;
-    public AudioClip defeat;
-    public AudioClip swordAttack;
-    public AudioClip arrowAttack;
-    public AudioClip typeKeyBoard;
+    public AudioClip collectCoin;
+    public AudioClip proceed;
+    public AudioClip plant;
+    public AudioClip harverst;
     private void OnValidate()
     {
         if (AufxClick == null)
@@ -27,6 +22,7 @@ public class SoundManager : Singleton<SoundManager>
     protected override void Awake()
     {
         MakeSingleton(true);
+        Music();
     }
     private void FixedUpdate()
     {
@@ -45,43 +41,28 @@ public class SoundManager : Singleton<SoundManager>
     {
         AufxBackground.clip = music;
         AufxBackground.Play();
-    }
-    public void Rain()
-    {
-        AufxRain.clip = rain;
-        AufxRain.Play();
+        AufxBackground.playOnAwake = true;
+        AufxBackground.loop = true;
     }
     public void ButtonSound()
     {
         AufxClick.PlayOneShot(buttonClip);
     }
-    public void BuyOrUpgrade()
+    public void CollectCoin()
     {
-        AufxClick.PlayOneShot(buyOrUpgrade);
-    }
-    public void Victory()
-    {
-        AufxClick.PlayOneShot(victory);
-    }
-    public void Defeat()
-    {
-        AufxClick.PlayOneShot(defeat);
-    }
-    public void SwordAttack()
-    {
-        AufxClick.PlayOneShot(swordAttack);
-    }
-    public void ArrowAttack()
-    {
-        AufxClick.PlayOneShot(arrowAttack);
+        AufxClick.PlayOneShot(collectCoin);
     } 
-    public void ArrowRainAttack()
+    public void Proceed()
     {
-        AufxClick.PlayOneShot(arrowRain);
+        AufxClick.PlayOneShot(proceed);
     } 
-    public void TypeKeyBoard()
+    public void Plant()
     {
-        AufxClick.PlayOneShot(typeKeyBoard);
+        AufxClick.PlayOneShot(plant);
+    } 
+    public void Haverst()
+    {
+        AufxClick.PlayOneShot(harverst);
     }
-
+    
 }

@@ -17,4 +17,4 @@ MonoBehaviour:
   seedlingTile: {fileID: 11400000, guid: 018ad0e55c1eea947a58061d3b74d764, type: 2}
   youngPlantTile: {fileID: 11400000, guid: 43a2bc2bc8a6e5d409188836076f01e9, type: 2}
   maturePlantTile: {fileID: 11400000, guid: a0801fd354795c14b949dda23f845a77, type: 2}
-  growthTime: 3
+  growthTime: 60

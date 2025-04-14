@@ -26,12 +26,12 @@ public class DataPlayer
                 totalItemQuantity = 0,
                 music = 0.5f,
                 sound = 0.5f,
-                skipCountToday = 0,
+                skipCountToday = 3,
                 lastResetDate = DateTime.Now.ToString("yyyy-MM-dd"),
                 currentOrder = null,
                 missions = new List<MissionData>(),
                 missionProgress = new List<int> { 0, 0, 0 },
-                nextResetTime = DateTime.Now.AddHours(12).ToString("yyyy-MM-ddTHH:mm:ss"),
+                nextResetTime = DateTime.Now.ToString(),
                 isBigRewardClaimed = false
         };
             SaveData();
