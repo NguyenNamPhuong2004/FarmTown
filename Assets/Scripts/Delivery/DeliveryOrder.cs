@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [Serializable]
@@ -27,7 +28,7 @@ public class DeliveryOrder
         for (int i = 0; i < itemCount && i < selectedItems.Count; i++)
         {
             Item item = selectedItems[i];
-            int amount = CalculateAmount(item.itemSalePrice);
+            int amount = RandomAmount(item);
             items.Add(new OrderItem { item = item, requiredAmount = amount });
             baseTotal += item.itemSalePrice * amount;
         }
@@ -37,10 +38,22 @@ public class DeliveryOrder
         totalPrice = Mathf.Max(totalPrice, 1);
     }
 
-    private int CalculateAmount(int salePrice)
+    private int RandomAmount(Item item)
     {
-        int maxAmount = Mathf.Clamp(10 - salePrice / 10, 1, 10);
-        return UnityEngine.Random.Range(1, maxAmount + 1);
+        int amount = 0;
+        switch (item.itemType)
+        {
+            case ItemType.Plant:
+                amount = UnityEngine.Random.Range(5,16);
+                break; 
+            case ItemType.Product:
+                amount = UnityEngine.Random.Range(5, 11);
+                break; 
+            case ItemType.Food:
+                amount = UnityEngine.Random.Range(3, 6);
+                break; 
+        }
+        return amount;
     }
 
     private void Shuffle<T>(List<T> list)

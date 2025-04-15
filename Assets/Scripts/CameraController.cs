@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CameraController : MonoBehaviour
 {
@@ -12,6 +13,10 @@ public class CameraController : MonoBehaviour
        
         if (Input.GetMouseButtonDown(0))
         {
+            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
             dragOrigin = Input.mousePosition;
             return;
         }
@@ -19,6 +24,10 @@ public class CameraController : MonoBehaviour
         
         if (Input.GetMouseButton(0))
         {
+            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
             Vector3 difference = Camera.main.ScreenToViewportPoint(Input.mousePosition - dragOrigin);
             Vector3 move = new Vector3(-difference.x * dragSpeed, -difference.y * dragSpeed, 0);
 

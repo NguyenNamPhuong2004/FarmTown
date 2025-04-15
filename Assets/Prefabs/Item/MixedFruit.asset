@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f45a1432e80159e4887aad3a2b3916e4, type: 3}
   m_Name: MixedFruit
   m_EditorClassIdentifier: 
-  id: 14
+  id: 28
   itemName: MixedFruit
   itemSalePrice: 92
   itemBuyPrice: 0

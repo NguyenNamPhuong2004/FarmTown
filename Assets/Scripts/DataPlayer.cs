@@ -1,15 +1,14 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
-public class DataPlayer 
+public class DataPlayer
 {
     private const string ALL_DATA = "all_data";
     public static AllData allData;
 
     public static event Action UpdateCoinEvent;
+
     static DataPlayer()
     {
         allData = JsonUtility.FromJson<AllData>(PlayerPrefs.GetString(ALL_DATA));
@@ -19,7 +18,8 @@ public class DataPlayer
             {
                 tileDataList = new List<TileData>(),
                 animalDataList = new List<AnimalData>(),
-                itemQuantityList = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                treeDataList = new List<TreeData>(),
+                itemQuantityList = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                 waitingSlotList = new List<WaitingSlot>(),
                 coin = 1000,
                 inventoryMax = 50,
@@ -31,108 +31,130 @@ public class DataPlayer
                 currentOrder = null,
                 missions = new List<MissionData>(),
                 missionProgress = new List<int> { 0, 0, 0 },
-                nextResetTime = DateTime.Now.ToString(),
+                nextResetTime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"),
                 isBigRewardClaimed = false
-        };
+            };
             SaveData();
         }
     }
+
     private static void SaveData()
     {
-        var data = JsonUtility.ToJson(allData);
+        string data = JsonUtility.ToJson(allData);
         PlayerPrefs.SetString(ALL_DATA, data);
     }
+
     public static void AddTileData(TileData tileData)
     {
         allData.AddTileData(tileData);
         SaveData();
     }
+
     public static void RemoveTileData(TileData tileData)
     {
         allData.RemoveTileData(tileData);
         SaveData();
-    } 
+    }
+
+    public static List<TileData> GetTileDataList()
+    {
+        return allData.GetTileDataList();
+    }
+
+    public static bool IsContain(int x, int y)
+    {
+        return allData.IsContain(x, y);
+    }
+
+    public static TileData GetTileDataFromList(int x, int y)
+    {
+        return allData.GetTileDataFromList(x, y);
+    }
+
     public static void AddWaitingSlot(WaitingSlot waitingSlot)
     {
         allData.AddWaitingSlot(waitingSlot);
         SaveData();
     }
+
     public static void RemoveWaitingSlot(WaitingSlot waitingSlot)
     {
         allData.RemoveWaitingSlot(waitingSlot);
         SaveData();
     }
+
     public static WaitingSlot GetWaitingSlot(int id)
     {
         return allData.GetWaitingSlot(id);
     }
+
     public static int GetWaitingSlotListCount()
     {
         return allData.GetWaitingSlotListCount();
     }
-    public static List<TileData> GetTileDataList()
-    {
-        return allData.GetTileDataList();
-    } 
-    public static bool IsContain(int x, int y)
-    {
-        return allData.IsContain(x, y);
-    }
-    public static TileData GetTileDataFromList(int x, int y)
-    {
-        return allData.GetTileDataFromList(x, y);
-    }
+
     public static void AddItemQuantity(int id, int quantity)
     {
         allData.AddItemQuantity(id, quantity);
         SaveData();
     }
+
     public static void SubItemQuantity(int id, int quantity)
     {
         allData.SubItemQuantity(id, quantity);
         SaveData();
     }
+
     public static int GetItemQuantity(int id)
     {
         return allData.GetItemQuantity(id);
     }
+
     public static int GetCoin()
     {
         return allData.GetCoin();
     }
+
     public static void SubCoin(int cost)
     {
         allData.SubCoin(cost);
         UpdateCoinEvent?.Invoke();
         SaveData();
     }
+
     public static bool IsEnoughMoney(int cost)
     {
         return allData.IsEnoughMoney(cost);
     }
+
     public static void AddCoin(int money)
     {
         allData.AddCoin(money);
         UpdateCoinEvent?.Invoke();
         SaveData();
     }
+
     public static void SetInventoryMax()
     {
         allData.SetInventoryMax();
         SaveData();
     }
+
     public static int GetInventoryMax()
     {
         return allData.GetInventoryMax();
     }
+
     public static int GetTotalItemQuantity()
     {
         return allData.GetTotalItemQuantity();
-    } 
+    }
+
     public static bool IsInventoryMax()
     {
         return allData.IsInventoryMax();
     }
+
     public static void AddAnimalData(AnimalData animalData)
     {
         allData.AddAnimalData(animalData);
@@ -149,11 +171,36 @@ public class DataPlayer
     {
         return allData.GetAnimalData(id);
     }
+
     public static void UpdateAnimalData(int id, AnimalState state, string endTime, Vector3 position)
     {
         allData.UpdateAnimalData(id, state, endTime, position);
         SaveData();
     }
+
+    public static void AddTreeData(TreeData treeData)
+    {
+        allData.AddTreeData(treeData);
+        SaveData();
+    }
+
+    public static void RemoveTreeData(int id)
+    {
+        allData.RemoveTreeData(id);
+        SaveData();
+    }
+
+    public static List<TreeData> GetTreeDataList()
+    {
+        return allData.treeDataList;
+    }
+
+    public static void UpdateTreeData(int id, TreeState state, string endTime, Vector3 position)
+    {
+        allData.UpdateTreeData(id, state, endTime, position);
+        SaveData();
+    }
+
     public static void SetCurrentOrder(DeliveryOrder order)
     {
         allData.SetCurrentOrder(order);
@@ -186,6 +233,7 @@ public class DataPlayer
     {
         return allData.GetLastResetDate();
     }
+
     public static List<MissionData> GetMissions()
     {
         return allData.GetMissions();
@@ -229,79 +277,76 @@ public class DataPlayer
         allData.SetIsBigRewardClaimed(claimed);
         SaveData();
     }
+
     public static void AddListenerUpdateCoinEvent(Action updateCoin)
     {
         UpdateCoinEvent += updateCoin;
     }
+
     public static void RemoveListenerUpdateCoinEvent(Action updateCoin)
     {
         UpdateCoinEvent -= updateCoin;
     }
+
     public static void SetMusic(float volume)
     {
         allData.SetMusic(volume);
+        SaveData();
     }
+
     public static float GetMusic()
     {
         return allData.GetMusic();
     }
+
     public static void SetSound(float volume)
     {
         allData.SetSound(volume);
+        SaveData();
     }
+
     public static float GetSound()
     {
         return allData.GetSound();
     }
 }
+
 public class AllData
 {
-    public List <TileData> tileDataList;
-    public List <AnimalData> animalDataList;
-    public List <int> itemQuantityList;
-    public List <WaitingSlot> waitingSlotList;
+    public List<TileData> tileDataList;
+    public List<AnimalData> animalDataList;
+    public List<TreeData> treeDataList;
+    public List<int> itemQuantityList;
+    public List<WaitingSlot> waitingSlotList;
     public int coin;
     public int inventoryMax;
     public int totalItemQuantity;
     public float music;
     public float sound;
-    public DeliveryOrder currentOrder; 
-    public int skipCountToday;         
+    public DeliveryOrder currentOrder;
+    public int skipCountToday;
     public string lastResetDate;
     public List<MissionData> missions;
     public List<int> missionProgress;
     public string nextResetTime;
     public bool isBigRewardClaimed;
+
     public List<TileData> GetTileDataList()
     {
         return tileDataList;
     }
+
     public void AddTileData(TileData tileData)
-    {       
+    {
         tileDataList.Add(tileData);
-        Debug.Log(tileData.x +" + " +tileData.y);
-        Debug.Log(itemQuantityList.Count);
-    } 
+        Debug.Log("Added TileData: " + tileData.x + ", " + tileData.y);
+    }
+
     public void RemoveTileData(TileData tileData)
-    {       
+    {
         tileDataList.Remove(tileData);
     }
-    public void AddWaitingSlot(WaitingSlot waitingSlot)
-    {
-        waitingSlotList.Add(waitingSlot);
-    } 
-    public void RemoveWaitingSlot(WaitingSlot waitingSlot)
-    {
-        waitingSlotList.Remove(waitingSlot);
-    }
-    public WaitingSlot GetWaitingSlot(int id)
-    {
-        return waitingSlotList[id];
-    }
-    public int GetWaitingSlotListCount()
-    {
-        return waitingSlotList.Count;
-    }
+
     public bool IsContain(int x, int y)
     {
         for (int i = 0; i < tileDataList.Count; i++)
@@ -313,6 +358,7 @@ public class AllData
         }
         return false;
     }
+
     public TileData GetTileDataFromList(int x, int y)
     {
         Debug.Log(x + " + " + y);
@@ -327,79 +373,99 @@ public class AllData
         Debug.Log("null");
         return null;
     }
+
+    public void AddWaitingSlot(WaitingSlot waitingSlot)
+    {
+        waitingSlotList.Add(waitingSlot);
+    }
+
+    public void RemoveWaitingSlot(WaitingSlot waitingSlot)
+    {
+        waitingSlotList.Remove(waitingSlot);
+    }
+
+    public WaitingSlot GetWaitingSlot(int id)
+    {
+        return waitingSlotList[id];
+    }
+
+    public int GetWaitingSlotListCount()
+    {
+        return waitingSlotList.Count;
+    }
+
     public void AddItemQuantity(int id, int quantity)
-    { 
+    {
         itemQuantityList[id] += quantity;
         totalItemQuantity += quantity;
     }
+
     public void SubItemQuantity(int id, int quantity)
     {
         if (itemQuantityList[id] <= 0) return;
         itemQuantityList[id] -= quantity;
         totalItemQuantity -= quantity;
     }
+
     public int GetItemQuantity(int id)
     {
-        return itemQuantityList[id]; 
+        Debug.Log(id);
+        return itemQuantityList[id];
     }
+
     public void SubCoin(int cost)
     {
         coin -= cost;
     }
+
     public int GetCoin()
     {
         return coin;
     }
+
     public bool IsEnoughMoney(int cost)
     {
         return coin >= cost;
     }
+
     public void AddCoin(int money)
     {
         coin += money;
     }
+
     public void SetInventoryMax()
     {
         inventoryMax += 50;
     }
+
     public int GetInventoryMax()
     {
         return inventoryMax;
     }
+
     public int GetTotalItemQuantity()
     {
         return totalItemQuantity;
     }
+
     public bool IsInventoryMax()
     {
         return totalItemQuantity >= inventoryMax;
     }
-    public void SetMusic(float volume)
-    {
-        music = volume;
-    }
-    public float GetMusic()
-    {
-        return music;
-    }
-    public void SetSound(float volume)
-    {
-        sound = volume;
-    }
-    public float GetSound()
-    {
-        return sound;
-    }
+
     public void AddAnimalData(AnimalData animalData)
     {
         animalDataList.Add(animalData);
     }
-    
-    public void RemoveAnimalData( int id) 
+
+    public void RemoveAnimalData(int id)
     {
-        animalDataList.Remove(animalDataList[id]);
+        if (id >= 0 && id < animalDataList.Count)
+        {
+            animalDataList.RemoveAt(id);
+        }
     }
-    
+
     public AnimalData GetAnimalData(int id)
     {
         foreach (var animal in animalDataList)
@@ -411,6 +477,43 @@ public class AllData
         }
         return null;
     }
+
+    public void AddTreeData(TreeData treeData)
+    {
+        treeDataList.Add(treeData);
+    }
+
+    public void RemoveTreeData(int id)
+    {
+        if (id >= 0 && id < treeDataList.Count)
+        {
+            treeDataList.RemoveAt(id);
+        }
+    }
+
+    public TreeData GetTreeData(int id)
+    {
+        foreach (var tree in treeDataList)
+        {
+            if (tree.id == id)
+            {
+                return tree;
+            }
+        }
+        return null;
+    }
+
+    public void UpdateTreeData(int id, TreeState state, string endTime, Vector3 position)
+    {
+        TreeData treeData = GetTreeData(id);
+        if (treeData != null)
+        {
+            treeData.state = state;
+            treeData.endTime = endTime;
+            treeData.position = position;
+        }
+    }
+
     public void UpdateAnimalData(int id, AnimalState state, string endTime, Vector3 position)
     {
         AnimalData animalData = GetAnimalData(id);
@@ -421,9 +524,10 @@ public class AllData
             animalData.position = position;
         }
     }
+
     public void SetCurrentOrder(DeliveryOrder order)
     {
-        currentOrder = order;      
+        currentOrder = order;
     }
 
     public DeliveryOrder GetCurrentOrder()
@@ -433,7 +537,7 @@ public class AllData
 
     public void SetSkipCountToday(int count)
     {
-        skipCountToday = count;      
+        skipCountToday = count;
     }
 
     public int GetSkipCountToday()
@@ -443,13 +547,14 @@ public class AllData
 
     public void SetLastResetDate(string date)
     {
-        lastResetDate = date;     
+        lastResetDate = date;
     }
 
     public string GetLastResetDate()
     {
         return lastResetDate;
     }
+
     public List<MissionData> GetMissions()
     {
         return missions;
@@ -458,7 +563,6 @@ public class AllData
     public void SetMissions(List<MissionData> newMissions)
     {
         missions = newMissions;
-        
     }
 
     public List<int> GetMissionProgress()
@@ -469,7 +573,6 @@ public class AllData
     public void SetMissionProgress(List<int> progress)
     {
         missionProgress = progress;
-       
     }
 
     public string GetNextResetTime()
@@ -479,7 +582,7 @@ public class AllData
 
     public void SetNextResetTime(string time)
     {
-        nextResetTime = time;  
+        nextResetTime = time;
     }
 
     public bool GetIsBigRewardClaimed()
@@ -490,6 +593,26 @@ public class AllData
     public void SetIsBigRewardClaimed(bool claimed)
     {
         isBigRewardClaimed = claimed;
+    }
+
+    public void SetMusic(float volume)
+    {
+        music = volume;
+    }
+
+    public float GetMusic()
+    {
+        return music;
+    }
+
+    public void SetSound(float volume)
+    {
+        sound = volume;
+    }
+
+    public float GetSound()
+    {
+        return sound;
     }
 }
 [Serializable]
@@ -534,17 +657,24 @@ public class TreeData
     public int id;
     public string treeName;
     public Vector3 position;
-    public bool hasFruit;
-    public float remainingTime;
+    public TreeState state;
+    public string endTime; 
 
-    public TreeData(int id, string name, Vector3 position, int remainingTime)
+    public TreeData(int id, string name, Vector3 position, float growthTime)
     {
         this.id = id;
         this.treeName = name;
         this.position = position;
-        this.hasFruit = false;
-        this.remainingTime = remainingTime;
+        this.state = TreeState.Growing;
+        DateTime endTimeDt = DateTime.Now.AddSeconds(growthTime);
+        this.endTime = endTimeDt.ToString("yyyy-MM-ddTHH:mm:ss");
     }
+}
+
+public enum TreeState
+{
+    Growing,
+    HasFruit
 }
 
 

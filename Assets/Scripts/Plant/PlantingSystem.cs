@@ -36,6 +36,7 @@ public class PlantingSystem : MonoBehaviour
         {
             if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
             {
+                selectedPlantType = null;
                 return;
             }
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -108,7 +109,7 @@ public class PlantingSystem : MonoBehaviour
             plantGrowthTimeUI.text = "00:00:00";
         }
         DataPlayer.RemoveTileData(tileData);
-        SoundManager.Ins.Haverst();
+        SoundManager.Ins.Harvest();
     }
 
     private void SelectTree(TileData tileData)

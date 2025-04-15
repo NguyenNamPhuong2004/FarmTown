@@ -127,7 +127,7 @@ public class AnimalManager : MonoBehaviour
     {
         if (productionInfo != null)
         {
-            productionInfo.ShowProductionInfo(animal.Id, animal.AnimalTypeData.animalName, animal.GetRemainingTime());
+            productionInfo.ShowProductionInfo(animal.Id, animal.AnimalTypeData.animalName, animal.GetRemainingTime(), "Animal");
         }
     }
 

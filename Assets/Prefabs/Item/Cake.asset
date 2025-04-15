@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f45a1432e80159e4887aad3a2b3916e4, type: 3}
   m_Name: Cake
   m_EditorClassIdentifier: 
-  id: 12
+  id: 26
   itemName: Cake
   itemSalePrice: 276
   itemBuyPrice: 0

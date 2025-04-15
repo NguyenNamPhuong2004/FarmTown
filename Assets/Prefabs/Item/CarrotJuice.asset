@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f45a1432e80159e4887aad3a2b3916e4, type: 3}
   m_Name: CarrotJuice
   m_EditorClassIdentifier: 
-  id: 7
+  id: 21
   itemName: CarrotJuice
   itemSalePrice: 160
   itemBuyPrice: 0

@@ -7,7 +7,7 @@ public class PlacementManager : MonoBehaviour
     private bool isPlacing = false;
     private SpriteRenderer previewSprite;
     public LayerMask groundLayer;
-    private int cost;
+    [SerializeField] private int cost;
   
     private AnimalManager animalManager;
     private TreeManager treeManager;
@@ -87,13 +87,13 @@ public class PlacementManager : MonoBehaviour
     private void UpdatePreviewColor()
     {
         previewSprite.color = IsValidPosition()
-            ? new Color(1, 1, 1, 0.5f) // Trong suốt khi hợp lệ
-            : new Color(1, 0, 0, 0.5f); // Đỏ khi không hợp lệ
+            ? new Color(1, 1, 1, 0.5f) 
+            : new Color(1, 0, 0, 0.5f); 
     }
     private bool IsValidPosition()
     {
-        // Kiểm tra vị trí hợp lệ (có thể tùy chỉnh thêm)
+        
         Collider2D hit = Physics2D.OverlapPoint(previewObject.transform.position, groundLayer);
-        return hit != null; // Đảm bảo vị trí nằm trên groundLayer
+        return hit != null; 
     }
 }

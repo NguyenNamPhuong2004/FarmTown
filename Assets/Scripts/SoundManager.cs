@@ -10,7 +10,7 @@ public class SoundManager : Singleton<SoundManager>
     public AudioClip collectCoin;
     public AudioClip proceed;
     public AudioClip plant;
-    public AudioClip harverst;
+    public AudioClip harvest;
     private void OnValidate()
     {
         if (AufxClick == null)
@@ -60,9 +60,9 @@ public class SoundManager : Singleton<SoundManager>
     {
         AufxClick.PlayOneShot(plant);
     } 
-    public void Haverst()
+    public void Harvest()
     {
-        AufxClick.PlayOneShot(harverst);
+        AufxClick.PlayOneShot(harvest);
     }
     
 }
