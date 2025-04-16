@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: AppleJuice
   m_EditorClassIdentifier: 
   recipeName: AppleJuice
-  resultItem: {fileID: 11400000, guid: 160ad98d797977845bb4af73e51e83cf, type: 2}
+  resultItem: {fileID: 11400000, guid: 44a8a7d396fb17543abd922ecc23ae9b, type: 2}
   resultAmount: 1
   ingredients:
   - item: {fileID: 11400000, guid: 994b98cd617419b44a0a6c0d653f8ddd, type: 2}
